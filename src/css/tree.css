@@ -1,0 +1,42 @@
+.files-manager__tree {
+    background-color: #dde9f7;
+}
+
+.files-manager__folder-wrapper {
+    gap: 0.3rem;
+}
+
+.files-manager__tree .files-manager__folder__children {
+    margin-left: 20px;
+
+    &:not(.files-manager__folder__children--is-expended) {
+        height: 0;
+        overflow: hidden;
+    }
+}
+
+.files-manager__folder {
+    border: 0;
+    padding: var(--fm-base);
+    border-radius: var(--fm-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: var(--fm-color);
+    background: transparent;
+
+    &.files-manager__folder--is-active {
+        background-color: color-mix(
+            in srgb,
+            var(--fm-primary) 25%,
+            transparent
+        );
+    }
+
+    &:hover {
+        background-color: color-mix(
+            in srgb,
+            var(--fm-primary) 15%,
+            transparent
+        );
+    }
+}

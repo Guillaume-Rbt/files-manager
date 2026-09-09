@@ -1,0 +1,16 @@
+@layer reset, utils, components;
+
+@import "./reset.css" layer(reset);
+@import "./utils.css" layer(utils);
+@import "./tree.css" layer(components);
+@import "./files.css" layer(components);
+@import "./file.css" layer(components);
+@import "./toast.css" layer(components);
+
+.files-manager {
+    height: 100vh;
+
+    & * {
+        box-sizing: border-box;
+    }
+}

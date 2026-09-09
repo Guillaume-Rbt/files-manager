@@ -1,0 +1,28 @@
+.files-manager__files {
+    overflow: auto;
+    flex-grow: 1;
+}
+
+.files-manager__files__files-wrapper {
+    display: grid;
+    align-content: start;
+    justify-content: start;
+    grid-template-columns: 200px;
+    grid-template-columns: repeat(auto-fill, 100px);
+    padding-block: 1rem;
+    padding-inline: 1rem;
+}
+
+.files-manager__upload {
+    cursor: pointer;
+}
+
+.files-manager__upload input {
+    display: none;
+}
+
+.files-manager__upload {
+    display: block;
+    width: 100%;
+    text-align: center;
+}

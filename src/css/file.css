@@ -1,0 +1,18 @@
+.file {
+    padding: 0.5rem;
+    gap: 0.25rem;
+
+    &:hover {
+        background-color: color-mix(
+            in srgb,
+            var(--fm-primary),
+            transparent 90%
+        );
+    }
+}
+
+.file-icon {
+    width: 100%;
+    object-fit: contain;
+    object-position: center;
+}

@@ -1,0 +1,80 @@
+.files-manager__toast-container
+ {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 10;
+    gap:1rem
+}
+
+.files-manager__toast {
+    min-width: 300px;
+    color: var(--fm-color);
+    border-radius: .5rem;
+    overflow: hidden;
+    gap: 0.75rem;
+    box-shadow: 0 4px 6px 1px color-mix(in srgb, var(--color), transparent 50%);
+}
+
+.files-manager__toast__content 
+{
+    padding: 1rem;
+    padding-bottom: 0rem;
+    gap: 1rem
+}
+
+.files-manager__toast__header 
+{
+    gap: 1.25rem;
+}
+
+.files-manager__toast__title 
+{
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.files-manager__toast__close
+{
+    width: 1.5rem;
+    height: 1.5rem;
+    opacity: 0.7;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    & svg {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.files-manager__toast button {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 2px;
+}
+
+@keyframes toast-timer {
+    0% {
+        scale: 100% 100%;
+    }
+
+    100% {
+        scale: 0% 100%;
+    }
+}
+.files-manager__toast__timer 
+{
+    background: var(--color);
+    height: 0.25rem;
+animation-name: toast-timer;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    transform-origin: left center;
+}
