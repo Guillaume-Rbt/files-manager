@@ -20,6 +20,10 @@ const folderStates = new Map<string | null, FolderState>();
 const pendingFetches = new Set<string | null>();
 const listeners = new Set<() => void>();
 
+function normalizeFolderId(folder: string | null) {
+    return folder ?? "/";
+}
+
 function notify() {
     listeners.forEach((listener) => listener());
 }
@@ -30,7 +34,7 @@ function subscribe(listener: () => void) {
 }
 
 function getFolderState(folder: string | null): FolderState {
-    return folderStates.get(folder) ?? initialState;
+    return folderStates.get(normalizeFolderId(folder)) ?? initialState;
 }
 
 function setFolderState(
@@ -39,31 +43,34 @@ function setFolderState(
         | Partial<FolderState>
         | ((current: FolderState) => Partial<FolderState>),
 ) {
-    const current = getFolderState(folder);
+    const normalizedFolder = normalizeFolderId(folder);
+    const current = getFolderState(normalizedFolder);
     const resolvedPatch = typeof patch === "function" ? patch(current) : patch;
 
-    folderStates.set(folder, { ...current, ...resolvedPatch });
+    folderStates.set(normalizedFolder, { ...current, ...resolvedPatch });
     notify();
 }
 
 async function fetchFolderFiles(folder: string | null) {
-    if (pendingFetches.has(folder)) {
+    const normalizedFolder = normalizeFolderId(folder);
+
+    if (pendingFetches.has(normalizedFolder)) {
         return;
     }
 
-    pendingFetches.add(folder);
+    pendingFetches.add(normalizedFolder);
     // Snapshot the files reference so we can detect an optimistic update
     // (add/remove) that happened while this request was in flight.
     const filesBeforeFetch = getFolderState(folder).files;
-    setFolderState(folder, { loading: true });
+    setFolderState(normalizedFolder, { loading: true });
 
     try {
         const response = await fetch(
-            `${FilesManager.endPoint}/files?parent=${folder ?? ""}`,
+            `${FilesManager.endPoint}/files?parent=${normalizedFolder}`,
         );
         const data = (await response.json()) as FileType[];
 
-        setFolderState(folder, (current) => {
+        setFolderState(normalizedFolder, (current) => {
             if (current.files !== filesBeforeFetch) {
                 // An optimistic update already changed the files, keep it.
                 return { ok: response.ok, loading: false, fetched: true };
@@ -77,9 +84,13 @@ async function fetchFolderFiles(folder: string | null) {
             };
         });
     } catch {
-        setFolderState(folder, { ok: false, loading: false, fetched: true });
+        setFolderState(normalizedFolder, {
+            ok: false,
+            loading: false,
+            fetched: true,
+        });
     } finally {
-        pendingFetches.delete(folder);
+        pendingFetches.delete(normalizedFolder);
     }
 }
 
@@ -107,6 +118,20 @@ export function removeFileFromCache(folder: string | null, fileId: string) {
     const updated = getFolderState(folder).files.filter(
         (file) => file.id !== fileId,
     );
+
+    setFolderState(folder, { files: updated });
+
+    return updated;
+}
+
+export function renameFileInCache(
+    folder: string | null,
+    previousFileId: string,
+    renamedFile: FileType,
+) {
+    const updated = getFolderState(folder)
+        .files.map((file) => (file.id === previousFileId ? renamedFile : file))
+        .sort((a, b) => a.name.localeCompare(b.name));
 
     setFolderState(folder, { files: updated });
 

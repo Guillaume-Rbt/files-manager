@@ -1,17 +1,40 @@
 .files-manager__tree {
-    background-color: #dde9f7;
+    background-color: color-mix(in srgb, var(--fm-primary) 10%, transparent);
+    height: 100%;
+    padding: 1rem;
+    overflow: auto;
+    min-width: 16rem;
 }
 
 .files-manager__folder-wrapper {
     gap: 0.3rem;
+    align-items: stretch;
+}
+
+.files-manager__folder__name {
+    min-width: max-content;
 }
 
 .files-manager__tree .files-manager__folder__children {
-    margin-left: 20px;
+    margin-left: 1rem;
 
     &:not(.files-manager__folder__children--is-expended) {
         height: 0;
         overflow: hidden;
+    }
+}
+
+.files-manager__folder__actions {
+    gap: 0.3rem;
+    opacity: 0;
+    pointer-events: none;
+    background-color: inherit;
+    position: absolute;
+    right: 0;
+
+    &:is(.files-manager__folder:hover .files-manager__folder__actions) {
+        opacity: 1;
+        pointer-events: auto;
     }
 }
 
@@ -23,20 +46,33 @@
     transition: background-color 0.3s ease;
     color: var(--fm-color);
     background: transparent;
+    position: relative;
+    gap: 2rem;
 
     &.files-manager__folder--is-active {
-        background-color: color-mix(
-            in srgb,
-            var(--fm-primary) 25%,
-            transparent
-        );
+        background-color: color-mix(in srgb, var(--fm-primary) 25%, white);
     }
 
     &:hover {
-        background-color: color-mix(
-            in srgb,
-            var(--fm-primary) 15%,
-            transparent
-        );
+        background-color: color-mix(in srgb, var(--fm-primary) 20%, white);
     }
+}
+
+.files-manager__folder__icon {
+    font-size: 1.5rem;
+    margin-right: 0.5em;
+    color: var(--fm-primary);
+    opacity: 0.7;
+}
+
+.files-manager__folder__input {
+    width: 10px;
+    font-size: 1rem;
+    padding: 0.25rem;
+    border: 1px solid var(--fm-primary);
+}
+
+.files-manager__add-folder-wrapper {
+    gap: 0.3rem;
+    align-items: center;
 }

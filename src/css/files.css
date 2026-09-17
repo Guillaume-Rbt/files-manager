@@ -3,14 +3,46 @@
     flex-grow: 1;
 }
 
+.files-manager__move-folder.files-manager__folder--is-active {
+    background: color-mix(in srgb, var(--fm-primary) 14%, white);
+}
+
+.files-manager__move-menu {
+    padding: 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--fm-primary) 22%, transparent);
+    border-radius: var(--fm-radius);
+    width: max-content;
+    background: #fff;
+}
+
+.files-manager__move-menu__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
 .files-manager__files__files-wrapper {
     display: grid;
     align-content: start;
     justify-content: start;
-    grid-template-columns: 200px;
-    grid-template-columns: repeat(auto-fill, 100px);
+    grid-template-columns: repeat(auto-fill, 110px);
     padding-block: 1rem;
     padding-inline: 1rem;
+    position: relative;
+    gap: 1rem;
+}
+
+.files-manager__files__files-wrapper--is-dragging::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    pointer-events: none;
 }
 
 .files-manager__upload {
@@ -25,4 +57,44 @@
     display: block;
     width: 100%;
     text-align: center;
+}
+
+.files-manager__uploads {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.files-manager__uploads__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff;
+    font-size: 0.85rem;
+}
+
+.files-manager__uploads__item__spinner {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: files-manager__uploads-spin 0.8s linear infinite;
+}
+
+.files-manager__uploads__item__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@keyframes files-manager__uploads-spin {
+    to {
+        transform: rotate(360deg);
+    }
 }

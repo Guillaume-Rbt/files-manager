@@ -1,0 +1,67 @@
+.files-manager__toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--fm-primary) 18%, transparent);
+    background: #fff;
+}
+
+.files-manager__toolbar__actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.files-manager__toolbar__search {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    color: var(--fm-color);
+}
+
+.files-manager__toolbar__search input {
+    width: min(100%, 24rem);
+    border: 1px solid color-mix(in srgb, var(--fm-primary) 35%, transparent);
+    border-radius: var(--fm-radius);
+    padding: 0.4rem 0.75rem;
+    color: var(--fm-color);
+    background: #fff;
+    font-size: 1rem;
+}
+.files-manager__move-tree,
+.files-manager__move-folder-children {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.files-manager__move-folder-children {
+    padding-left: 1rem;
+}
+
+.files-manager__move-folder {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.5rem;
+    border: 0 !important;
+    text-align: left;
+}
+
+.files-manager__move-folder.files-manager__folder--is-active {
+    border-color: color-mix(in srgb, var(--fm-primary) 45%, transparent) !important;
+    background: color-mix(in srgb, var(--fm-primary) 25%, transparent);
+    font-weight: 600;
+}
+
+.files-manager__move-folder__icon {
+    flex: 0 0 auto;
+    color: var(--fm-primary);
+    font-size: 1.25rem;
+    opacity: 0.7;
+}
+
+.files-manager__move-confirm {
+    margin-top: 0.75rem;
+}

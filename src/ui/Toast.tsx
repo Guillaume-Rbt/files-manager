@@ -66,8 +66,6 @@ export function ToastProvider({ children }: { children: ComponentChildren }) {
             duration: number = 3000,
         ) => {
             const id = crypto.randomUUID();
-            if (!document.startViewTransition) {
-            }
             setToasts((current) => [
                 ...current,
                 {
@@ -93,11 +91,7 @@ export function ToastProvider({ children }: { children: ComponentChildren }) {
 
             <div className='files-manager__toast-container flex flex-column'>
                 {toasts.map((toast) => (
-                    <ToastItem
-                        key={toast.id}
-                        toast={toast}
-                        onClose={() => removeToast(toast.id)}
-                    />
+                    <ToastItem key={toast.id} toast={toast} onClose={() => removeToast(toast.id)} />
                 ))}
             </div>
         </ToastContext.Provider>
@@ -106,9 +100,9 @@ export function ToastProvider({ children }: { children: ComponentChildren }) {
 
 function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
     const colors = {
-        success: "var(--colors-ve-success)",
-        error: "var(--colors-ve-danger)",
-        warning: "var(--colors-ve-warning)",
+        success: "var(--fm-success)",
+        error: "var(--fm-danger)",
+        warning: "var(--fm-warning)",
         info: "var(--fm-primary)",
     };
 
@@ -132,14 +126,9 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
             <div className='flex flex-column flex-align-start'>
                 <div className='flex flex-column files-manager__toast__content w-full'>
                     <div className='flex flex-justify-center flex-align-center files-manager__toast__header'>
-                        <p className='files-manager__toast__title'>
-                            {toast.title}
-                        </p>
+                        <p className='files-manager__toast__title'>{toast.title}</p>
 
-                        <button
-                            type='button'
-                            onClick={onClose}
-                            className='ml-auto files-manager__toast__close'>
+                        <button type='button' onClick={onClose} className='ml-auto files-manager__toast__close'>
                             <CloseIcon />
                         </button>
                     </div>

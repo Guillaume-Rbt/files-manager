@@ -1,10 +1,10 @@
 :root {
     --fm-base: 0.25rem;
     --fm-color: #1a1a1a;
-    --fm-primary: #0d6efd;
-     --fm-danger: #dc3545;
-     --fm-warning: #ffc107;
-     --fm-success: #198754;
+    --fm-primary: #0081ff;
+    --fm-danger: #de3e44;
+    --fm-warning: #fec001;
+    --fm-success: #1ba345;
     --fm-radius: calc(var(--fm-base));
 }
 
@@ -14,6 +14,14 @@
 
 .h-full {
     height: 100%;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.shrink-0 {
+    flex-shrink: 0;
 }
 
 .flex {
@@ -79,4 +87,72 @@
 
 .mb-auto {
     margin-bottom: auto;
+}
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.rounded-button {
+    border-radius: 50%;
+    padding: 0.3rem;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+
+    &[data-type="danger"] {
+        color: var(--fm-danger);
+    }
+
+    &:hover {
+        background-color: color-mix(in srgb, var(--fm-primary) 18%, transparent);
+    }
+}
+
+.btn {
+    border-radius: var(--fm-radius);
+    padding: 0.4rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 300ms all;
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.45;
+    }
+
+    &.btn-primary {
+        color: #fff;
+        background: var(--fm-primary);
+
+        &:hover {
+            background: color-mix(in srgb, var(--fm-primary) 80%, #000);
+        }
+    }
+
+    &.btn-secondary {
+        border: 1px solid color-mix(in srgb, var(--fm-primary) 35%, transparent);
+        padding: 0.4rem 0.75rem;
+        color: var(--fm-color);
+        background: #fff;
+
+        &:hover:not(:disabled),
+        &.active {
+            background: color-mix(in srgb, var(--fm-primary) 14%, white);
+        }
+    }
+}
+
+.bold {
+    font-weight: bold;
 }
