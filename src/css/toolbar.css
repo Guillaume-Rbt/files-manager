@@ -47,6 +47,12 @@
     gap: 0.5rem;
     border: 0 !important;
     text-align: left;
+    background: none;
+    padding: 0.3rem 0.5rem;
+    cursor: pointer;
+    &:hover {
+        background: color-mix(in srgb, var(--fm-primary) 10%, transparent);
+    }
 }
 
 .files-manager__move-folder.files-manager__folder--is-active {

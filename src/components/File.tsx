@@ -6,6 +6,11 @@ import { useState, useLayoutEffect, useRef, useEffect } from "preact/hooks";
 import { setActiveFileId, useFileActive } from "../stores/activeFile";
 import { confirmSanitizedName } from "../utils/functions";
 import { useConfirm } from "../hooks/useConfirm";
+import DeleteIcon from "../assets/icons/delete.svg?react";
+import AudioFileIcon from "../assets/icons/audio-file.svg?react";
+import VideoFileIcon from "../assets/icons/video-file.svg?react";
+import ArchiveIcon from "../assets/icons/archive.svg?react";
+import DocumentIcon from "../assets/icons/file-icon.svg?react";
 
 export function File({
     file,
@@ -21,7 +26,6 @@ export function File({
     onRenameStarted?: () => void;
 }) {
     const name = file.name.split("/").pop();
-    const { request: deleteFile } = useFetch<{ file: string }>(`${FilesManager.endPoint}/files`, undefined, true);
     const { request: renameFile } = useFetch<FileType>(`${FilesManager.endPoint}/files`, undefined, true);
     const [renameMode, setRenameMode] = useState(false);
     const [newName, setNewName] = useState(name ?? "");
@@ -41,22 +45,6 @@ export function File({
             onRenameStarted?.();
         }
     }, [shouldRename, onRenameStarted]);
-
-    const handleDelete = async () => {
-        const { ok } = await deleteFile({
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ id: file.id }),
-        });
-
-        if (!ok) {
-            return;
-        }
-
-        onDeleted(file.id);
-    };
 
     const handleRename = async () => {
         const sanitizedName = await confirmSanitizedName(newName, confirm, "fichier");
@@ -103,6 +91,7 @@ export function File({
                 <input
                     ref={renameInputElement}
                     className='file__name'
+                    aria-label={`Renommer le fichier ${name}`}
                     value={newName}
                     onInput={(event) => setNewName(event.currentTarget.value)}
                     onKeyDown={(event) => {
@@ -126,8 +115,14 @@ export function File({
                     {name}
                 </span>
             )}
-            <button type='button' className='file__delete' onClick={handleDelete}>
-                Delete
+            <button
+                type='button'
+                className='file__delete'
+                aria-label={`Supprimer le fichier ${name}`}
+                onClick={() => {
+                    onDeleted(file.id);
+                }}>
+                <DeleteIcon />
             </button>
         </div>
     );
@@ -159,17 +154,17 @@ function FileIcon({ file }: { file: FileType }) {
             case "image":
                 return <img src={`${FilesManager.rootDir}/${file.id}`} alt={file.name} />;
             case "video":
-                return <span>🎥</span>;
+                return <VideoFileIcon />;
             case "audio":
-                return <span>🎵</span>;
+                return <AudioFileIcon />;
             case "pdf":
-                return <span>📄</span>;
+                return <DocumentIcon />;
             case "text":
-                return <span>📝</span>;
+                return <DocumentIcon />;
             case "archive":
-                return <span>🗄️</span>;
+                return <ArchiveIcon />;
             default:
-                return <span>📄</span>;
+                return <DocumentIcon />;
         }
     };
 

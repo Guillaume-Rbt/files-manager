@@ -1,4 +1,4 @@
-import { useMemo, useState } from "preact/hooks";
+import { useMemo, useState, useEffect } from "preact/hooks";
 import { FilesManager } from "../files-manager";
 import { useFetch } from "../hooks/useFetch";
 import { useToast } from "../ui/Toast";
@@ -8,6 +8,11 @@ import { buildFolderTree } from "../utils/functions";
 import FolderOpenIcon from "../assets/icons/folder-open.svg?react";
 import FolderIcon from "../assets/icons/folder.svg?react";
 import CloseIcon from "../assets/icons/close.svg?react";
+import RenameIcon from "../assets/icons/rename.svg?react";
+import DeleteIcon from "../assets/icons/delete.svg?react";
+import ChevronIcon from "../assets/icons/chevron.svg?react";
+import { RoundedButton } from "../ui/RoundedButton";
+import { CONSTANTS } from "../utils/constants";
 
 function FolderOption({
     folder,
@@ -71,8 +76,26 @@ export function FilesToolbar({
 
     const openMoveMenu = () => {
         setDestinationId(null);
-        setIsMoveMenuOpen(true);
+        setIsMoveMenuOpen(!isMoveMenuOpen);
     };
+
+    useEffect(() => {
+        const handleClick = (event: Event) => {
+            if (!(event.target as HTMLElement).closest(".files-manager__move-folder")) {
+                setIsMoveMenuOpen(false);
+            }
+        };
+
+        if (isMoveMenuOpen) {
+            document.addEventListener(CONSTANTS.events.CLICK_TOUCH, handleClick);
+        } else {
+            document.removeEventListener(CONSTANTS.events.CLICK_TOUCH, handleClick);
+        }
+
+        return () => {
+            document.removeEventListener(CONSTANTS.events.CLICK_TOUCH, handleClick);
+        };
+    }, [isMoveMenuOpen]);
 
     const handleMove = async () => {
         if (!activeFile || !canMove) {
@@ -107,35 +130,33 @@ export function FilesToolbar({
         <div className='files-manager__toolbar flex flex-align-center'>
             <div className='files-manager__toolbar__actions flex flex-align-center w-full'>
                 <button type='button' className={"btn btn-secondary"} disabled={!activeFile} onClick={onRename}>
+                    <RenameIcon />
                     Renommer
                 </button>
-
-                <button
-                    type='button'
-                    className={"btn btn-secondary"}
-                    disabled={!activeFile}
-                    onClick={() => onDelete(activeFile?.id ?? "")}>
-                    Supprimer
-                </button>
-
                 <div className='relative'>
                     <button
                         className={`btn btn-secondary ${isMoveMenuOpen ? "active" : ""}`}
                         type='button'
                         disabled={!activeFile}
+                        aria-expanded={isMoveMenuOpen}
+                        aria-haspopup='menu'
                         onClick={openMoveMenu}>
                         Déplacer
+                        <ChevronIcon className={`isMoveMenuOpen ${isMoveMenuOpen ? " rotate-90" : ""}`} />
                     </button>
                     {isMoveMenuOpen && activeFile && (
-                        <div className='files-manager__move-menu absolute'>
+                        <div
+                            id='files-manager-move-menu'
+                            className='files-manager__move-menu absolute'
+                            role='dialog'
+                            aria-label={`Déplacer le fichier ${activeFile.name}`}>
                             <div className='files-manager__move-menu__header'>
                                 <strong>Déplacer « {activeFile.name} »</strong>
-                                <button
-                                    type='button'
+                                <RoundedButton
                                     aria-label='Fermer le menu de déplacement'
                                     onClick={() => setIsMoveMenuOpen(false)}>
                                     <CloseIcon />
-                                </button>
+                                </RoundedButton>
                             </div>
                             {foldersLoading ? (
                                 <p>Chargement des dossiers...</p>
@@ -153,7 +174,7 @@ export function FilesToolbar({
                             )}
                             <button
                                 type='button'
-                                className='files-manager__move-confirm'
+                                className='files-manager__move-confirm btn btn-primary'
                                 disabled={!canMove}
                                 onClick={handleMove}>
                                 Confirmer le déplacement
@@ -161,11 +182,20 @@ export function FilesToolbar({
                         </div>
                     )}
                 </div>
+                <button
+                    type='button'
+                    className={"btn btn-secondary"}
+                    disabled={!activeFile}
+                    onClick={() => onDelete(activeFile?.id ?? "")}>
+                    <DeleteIcon />
+                    Supprimer
+                </button>
 
                 <label className='ml-auto files-manager__toolbar__search'>
                     <input
                         type='search'
                         value={searchTerm}
+                        aria-label='Rechercher un fichier'
                         onInput={(event) => onSearchChange(event.currentTarget.value)}
                         placeholder='Rechercher un fichier'
                     />

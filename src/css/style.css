@@ -1,13 +1,13 @@
-@layer reset, utils, components;
+@layer fm-reset, fm-utils, fm-components;
 
-@import "./reset.css" layer(reset);
-@import "./utils.css" layer(utils);
-@import "./tree.css" layer(components);
-@import "./files.css" layer(components);
-@import "./file.css" layer(components);
-@import "./toast.css" layer(components);
-@import "./confirm.css" layer(components);
-@import "./toolbar.css" layer(components);
+@import "./reset.css" layer(fm-reset);
+@import "./utils.css" layer(fm-utils);
+@import "./tree.css" layer(fm-components);
+@import "./files.css" layer(fm-components);
+@import "./file.css" layer(fm-components);
+@import "./toast.css" layer(fm-components);
+@import "./confirm.css" layer(fm-components);
+@import "./toolbar.css" layer(fm-components);
 
 .file-manager__overlay {
     position: fixed;

@@ -54,13 +54,20 @@ export function ModalProvider({ children }: { children: ComponentChildren }) {
 
             {message && (
                 <div className='confirm-overlay flex flex-column'>
-                    <div className='confirm-modal flex flex-column'>
-                        <h3>{title}</h3>
+                    <div
+                        className='confirm-modal flex flex-column'
+                        role='dialog'
+                        aria-modal='true'
+                        aria-labelledby='confirm-modal-title'>
+                        <h3 aria-labelledby='confirm-modal-title' className='confirm-modal__title'>
+                            {title}
+                        </h3>
                         <p dangerouslySetInnerHTML={{ __html: `${message}` }}></p>
 
                         <div className='confirm-modal__action flex flex-align-center flex-justify-end gap-2'>
                             {buttons?.map((button) => (
                                 <button
+                                    type='button'
                                     class={`btn btn-${button.type}`}
                                     onClick={button.action === "resolve" ? handleResolve : handleReject}>
                                     {button.label}

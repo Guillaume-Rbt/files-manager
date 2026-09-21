@@ -2,6 +2,16 @@ function isMobile() {
     return /Mobi|Android/i.test(navigator.userAgent);
 }
 
-export const CONSTANTS = {
-    CLICK_TOUCH: isMobile() ? "touchend" : "click",
+type Events = {
+    CLICK_TOUCH: keyof DocumentEventMap;
 };
+
+type Constants = {
+    events: Events;
+};
+
+export const CONSTANTS = {
+    events: {
+        CLICK_TOUCH: isMobile() ? "touchend" : "click",
+    },
+} as Constants;

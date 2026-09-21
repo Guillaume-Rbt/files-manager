@@ -9,12 +9,20 @@
     background-color: rgba(0, 0, 0, 0.5);
 }
 
+.confirm-modal__title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
 .confirm-modal {
     background-color: #fff;
     padding: 1rem;
     border-radius: calc(var(--fm-radius) * 4);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     gap: 1rem;
+    min-width: 300px;
+    max-width: 80%;
 }
 
 .confirm-modal__action {

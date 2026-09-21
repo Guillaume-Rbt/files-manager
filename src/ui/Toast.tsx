@@ -128,7 +128,11 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
                     <div className='flex flex-justify-center flex-align-center files-manager__toast__header'>
                         <p className='files-manager__toast__title'>{toast.title}</p>
 
-                        <button type='button' onClick={onClose} className='ml-auto files-manager__toast__close'>
+                        <button
+                            type='button'
+                            aria-label='Fermer le message'
+                            onClick={onClose}
+                            className='ml-auto files-manager__toast__close'>
                             <CloseIcon />
                         </button>
                     </div>

@@ -108,6 +108,16 @@ function FolderComponent({
     };
 
     const handleDeleteFolder = async () => {
+        const confirmed = await confirm({
+            title: "Supprimer le dossier",
+            message: `Êtes-vous sûr de vouloir supprimer le dossier "${folder.name}" et tout son contenu ?`,
+            confirmText: "Supprimer",
+        });
+
+        if (!confirmed) {
+            return;
+        }
+
         const { ok } = await deleteFolder({
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
@@ -199,6 +209,7 @@ function FolderComponent({
                             }}
                             className={"flex-grow files-manager__folder__input"}
                             type='text'
+                            aria-label={`Renommer le dossier ${folder.name}`}
                             value={renamedFolderName}
                             onClick={(event) => event.stopPropagation()}
                             onChange={(event) => setRenamedFolderName(event.currentTarget.value)}
@@ -218,6 +229,7 @@ function FolderComponent({
                 </span>
                 <div className='flex flex-align-center files-manager__folder__actions'>
                     <RoundedButton
+                        aria-label={`Ajouter un dossier dans ${folder.name}`}
                         onClick={(e) => {
                             e.stopPropagation();
                             isSettingFolder.current = true;
@@ -229,6 +241,7 @@ function FolderComponent({
                         <>
                             {!isRenaming ? (
                                 <RoundedButton
+                                    aria-label={`Renommer le dossier ${folder.name}`}
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         isSettingFolder.current = true;
@@ -238,7 +251,10 @@ function FolderComponent({
                                     <RenameIcon />
                                 </RoundedButton>
                             ) : null}
-                            <RoundedButton type='danger' onClick={handleDeleteFolder}>
+                            <RoundedButton
+                                type='danger'
+                                aria-label={`Supprimer le dossier ${folder.name}`}
+                                onClick={handleDeleteFolder}>
                                 <DeleteIcon />
                             </RoundedButton>
                         </>
@@ -269,6 +285,7 @@ function FolderComponent({
                         }}
                         className={"files-manager__folder__input flex-grow"}
                         type='text'
+                        aria-label={`Nom du nouveau dossier dans ${folder.name}`}
                         placeholder='Folder Name'
                         value={newFolderName}
                         onKeyDown={(e) => {
@@ -278,7 +295,9 @@ function FolderComponent({
                         }}
                         onChange={(e) => setNewFolderName(e.currentTarget.value)}
                     />
-                    <RoundedButton onClick={handleAddFolder}>
+                    <RoundedButton
+                        aria-label={`Valider l'ajout d'un dossier dans ${folder.name}`}
+                        onClick={handleAddFolder}>
                         <AddIcon />
                     </RoundedButton>
                 </div>

@@ -28,10 +28,11 @@
         "mime-types": "^3.0.2",
         "typescript": "^7.0.2",
         "vite": "^8.2.1",
-        "vite-plugin-svgr": "^5.2.0"
+        "vite-plugin-svgr": "^5.2.0",
+        "@fastify/multipart": "^10.1.1"
     },
     "dependencies": {
-        "@fastify/multipart": "^10.1.1",
+       
         "preact": "^10.29.8"
     }
 }

@@ -11,6 +11,7 @@ import { FilesToolbar } from "./FilesToolbar";
 import { setActiveFileId, useFileActive } from "../stores/activeFile";
 import { sanitizeName } from "../utils/functions";
 import { useAlert } from "../hooks/useAlert";
+import { useConfirm } from "../hooks/useConfirm";
 
 export function Files() {
     const activeFolderId = useFolderActive();
@@ -19,11 +20,13 @@ export function Files() {
     const { files, loading, ok } = useFiles(activeFolderId);
     const { request: uploadFiles } = useFetch<{ files: FileType[] }>(`${FilesManager.endPoint}/files`, undefined, true);
     const { addToast } = useToast();
+    const { request: deleteFile } = useFetch<{ file: string }>(`${FilesManager.endPoint}/files`, undefined, true);
     const [uploadingFileNames, setUploadingFileNames] = useState<string[]>([]);
     const [isDragging, setIsDragging] = useState(false);
     const [renameFileId, setRenameFileId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const alert = useAlert();
+    const confirm = useConfirm();
     const activeFile = files.find((file) => file.id === activeFileId);
     const normalizedSearchTerm = searchTerm.trim().toLocaleLowerCase();
     const visibleFiles = normalizedSearchTerm
@@ -34,10 +37,6 @@ export function Files() {
         addFilesToCache(activeFolderId, newFiles);
     };
 
-    const handleFileDeleted = (fileId: string) => {
-        removeFileFromCache(activeFolderId, fileId);
-    };
-
     const handleFileRenamed = (previousFileId: string, renamedFile: FileType) => {
         renameFileInCache(activeFolderId, previousFileId, renamedFile);
     };
@@ -46,6 +45,32 @@ export function Files() {
         removeFileFromCache(previousFolderId, activeFileId ?? movedFile.id);
         addFilesToCache(movedFile.parent, [movedFile]);
         setActiveFileId(null);
+    };
+
+    const handleDelete = async (id: string) => {
+        const confirmed = await confirm({
+            title: "Supprimer le fichier",
+            message: `Êtes-vous sûr de vouloir supprimer le fichier ${files.find((f) => f.id === id)?.name} ?`,
+            confirmText: "Supprimer",
+            cancelText: "Annuler",
+        });
+        if (!confirmed) {
+            return;
+        }
+
+        const { ok } = await deleteFile({
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id }),
+        });
+
+        if (!ok) {
+            return;
+        }
+
+        removeFileFromCache(activeFolderId, id);
     };
 
     const handleDrop = async (event: DragEvent) => {
@@ -110,7 +135,7 @@ export function Files() {
                 currentFolderId={activeFolderId}
                 searchTerm={searchTerm}
                 onSearchChange={setSearchTerm}
-                onDelete={handleFileDeleted}
+                onDelete={handleDelete}
                 onRename={() => setRenameFileId(activeFile?.id ?? null)}
                 onMoved={handleFileMoved}
             />
@@ -134,7 +159,7 @@ export function Files() {
                     <File
                         key={file.id}
                         file={file}
-                        onDeleted={handleFileDeleted}
+                        onDeleted={handleDelete}
                         onRenamed={handleFileRenamed}
                         shouldRename={renameFileId === file.id}
                         onRenameStarted={() => setRenameFileId(null)}

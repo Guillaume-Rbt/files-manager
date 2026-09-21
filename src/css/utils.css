@@ -8,6 +8,18 @@
     --fm-radius: calc(var(--fm-base));
 }
 
+.rotate-90 {
+    transform: rotate(90deg);
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+.rotate-270 {
+    transform: rotate(270deg);
+}
+
 .w-full {
     width: 100%;
 }
@@ -125,6 +137,7 @@
     justify-content: center;
     cursor: pointer;
     transition: 300ms all;
+    gap: 0.5rem;
 
     &:disabled {
         cursor: not-allowed;
@@ -135,8 +148,13 @@
         color: #fff;
         background: var(--fm-primary);
 
-        &:hover {
+        &:hover:not(:disabled) {
             background: color-mix(in srgb, var(--fm-primary) 80%, #000);
+        }
+
+        &:disabled {
+            opacity: 0.45;
+            filter: grayscale(100%);
         }
     }
 

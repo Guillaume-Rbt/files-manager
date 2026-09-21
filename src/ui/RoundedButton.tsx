@@ -4,13 +4,15 @@ export function RoundedButton({
     children,
     onClick,
     type = "default",
+    "aria-label": ariaLabel,
 }: {
     children: ComponentChildren;
     onClick: JSX.MouseEventHandler<HTMLButtonElement>;
     type?: "default" | "danger";
+    "aria-label"?: string;
 }) {
     return (
-        <button data-type={type} onClick={onClick} className='rounded-button'>
+        <button type='button' data-type={type} aria-label={ariaLabel} onClick={onClick} className='rounded-button'>
             {children}
         </button>
     );

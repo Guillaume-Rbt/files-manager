@@ -27,10 +27,7 @@ function resolveInRoot(relativePath: string): string {
     const sanitized = relativePath.replace(/^[/\\]+/, "");
     const fullPath = path.resolve(rootFolder, sanitized);
 
-    if (
-        fullPath !== rootFolder &&
-        !fullPath.startsWith(rootFolder + path.sep)
-    ) {
+    if (fullPath !== rootFolder && !fullPath.startsWith(rootFolder + path.sep)) {
         throw new Error("Invalid path");
     }
 
@@ -83,9 +80,7 @@ app.get("/api/folders", async () => {
     const directories = await getDirectories(rootFolder);
 
     return directories.map((dir) => {
-        const relativePath = path
-            .relative(rootFolder, dir)
-            .replaceAll(path.sep, "/");
+        const relativePath = path.relative(rootFolder, dir).replaceAll(path.sep, "/");
 
         const parentPath = path.posix.dirname(relativePath);
 
@@ -107,9 +102,7 @@ app.post("/api/folders", async (request, response) => {
     const parent = normalizeId(rawParent);
 
     try {
-        const folderPath = parent
-            ? path.join(resolveInRoot(parent), name)
-            : path.join(rootFolder, name);
+        const folderPath = parent ? path.join(resolveInRoot(parent), name) : path.join(rootFolder, name);
 
         await fs.mkdir(folderPath);
         response.status(201).send({
@@ -191,11 +184,7 @@ app.get("/api/files", async (request, response) => {
             .status(200)
             .send(
                 files.map((file) =>
-                    toFileResponse(
-                        file.name,
-                        parentId,
-                        mime.lookup(file.name) || "application/octet-stream",
-                    ),
+                    toFileResponse(file.name, parentId, mime.lookup(file.name) || "application/octet-stream"),
                 ),
             );
     } catch (error) {
@@ -216,9 +205,7 @@ app.post("/api/files", async (request, response) => {
 
     for await (const part of parts) {
         if (part.type === "field" && part.fieldname === "parent") {
-            parent = normalizeId(
-                typeof part.value === "string" ? part.value : null,
-            );
+            parent = normalizeId(typeof part.value === "string" ? part.value : null);
             continue;
         }
 
@@ -230,10 +217,7 @@ app.post("/api/files", async (request, response) => {
         const filePath = path.join(folderPath, part.filename);
 
         try {
-            await pipeline(
-                part.file,
-                createWriteStream(filePath, { flags: "wx" }),
-            );
+            await pipeline(part.file, createWriteStream(filePath, { flags: "wx" }));
         } catch (error) {
             if ((error as NodeJS.ErrnoException).code === "EEXIST") {
                 response.status(409).send({
@@ -264,15 +248,7 @@ app.patch("/api/files", async (request, response) => {
         const parentDir = path.posix.dirname(id);
         const parent = parentDir === "." ? null : parentDir;
 
-        response
-            .status(200)
-            .send(
-                toFileResponse(
-                    name,
-                    parent,
-                    mime.lookup(name) || "application/octet-stream",
-                ),
-            );
+        response.status(200).send(toFileResponse(name, parent, mime.lookup(name) || "application/octet-stream"));
     } catch (error) {
         if ((error as NodeJS.ErrnoException).code === "ENOENT") {
             response.status(404).send({ message: "Fichier introuvable." });
@@ -306,15 +282,7 @@ app.post("/api/files/move", async (request, response) => {
 
         await fs.rename(filePath, newFilePath);
 
-        response
-            .status(200)
-            .send(
-                toFileResponse(
-                    name,
-                    parent,
-                    mime.lookup(name) || "application/octet-stream",
-                ),
-            );
+        response.status(200).send(toFileResponse(name, parent, mime.lookup(name) || "application/octet-stream"));
     } catch (error) {
         if ((error as NodeJS.ErrnoException).code === "ENOENT") {
             response.status(404).send({ message: "Fichier introuvable." });

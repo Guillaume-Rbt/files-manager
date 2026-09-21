@@ -2,21 +2,14 @@
     padding: 0.5rem;
     gap: 0.5rem;
     border-radius: 0.25rem;
+    position: relative;
 
     &.file--active {
-        background-color: color-mix(
-            in srgb,
-            var(--fm-primary),
-            transparent 80%
-        );
+        background-color: color-mix(in srgb, var(--fm-primary), transparent 80%);
     }
 
     &:hover {
-        background-color: color-mix(
-            in srgb,
-            var(--fm-primary),
-            transparent 90%
-        );
+        background-color: color-mix(in srgb, var(--fm-primary), transparent 90%);
     }
 }
 
@@ -29,4 +22,24 @@
 
 .file__name {
     margin-bottom: auto;
+    word-wrap: break-word;
+}
+
+.file__delete {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: none;
+    color: var(--fm-danger);
+    font-size: 1.2rem;
+    background-clip: text;
+    cursor: pointer;
+
+    & svg {
+        background: #fff;
+    }
+
+    .file:hover & {
+        display: block;
+    }
 }
