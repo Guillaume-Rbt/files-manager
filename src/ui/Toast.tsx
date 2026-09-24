@@ -1,6 +1,7 @@
 import { useCallback, useContext, useState } from "preact/hooks";
 import { createContext, ComponentChildren } from "preact";
 import CloseIcon from "../assets/icons/close.svg?react";
+import { translation } from "../utils/functions";
 type ToastType = "success" | "error" | "warning" | "info";
 
 type Toast = {
@@ -130,7 +131,7 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
 
                         <button
                             type='button'
-                            aria-label='Fermer le message'
+                            aria-label={translation("closeMessage")}
                             onClick={onClose}
                             className='ml-auto files-manager__toast__close'>
                             <CloseIcon />

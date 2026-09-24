@@ -14,7 +14,7 @@ import AddIcon from "../assets/icons/add.svg?react";
 import DeleteIcon from "../assets/icons/delete.svg?react";
 import RenameIcon from "../assets/icons/rename.svg?react";
 import { useConfirm } from "../hooks/useConfirm";
-import { confirmSanitizedName } from "../utils/functions";
+import { confirmSanitizedName, translation } from "../utils/functions";
 
 type FolderResponse = FolderType | { message?: string };
 
@@ -69,7 +69,7 @@ function FolderComponent({
             return;
         }
 
-        const effectiveName = await confirmSanitizedName(newFolderName, confirm, "dossier");
+        const effectiveName = await confirmSanitizedName(newFolderName, confirm, translation("folderSubject"));
         if (effectiveName === null) {
             currentInput.current?.focus();
             return;
@@ -79,8 +79,8 @@ function FolderComponent({
 
         if (alreadyExists) {
             addToast({
-                title: `Un dossier nomme "${effectiveName}" existe deja ici.`,
-                message: "Veuillez choisir un autre nom.",
+                title: translation("duplicateFolderTitle", { name: effectiveName }),
+                message: translation("chooseAnotherName"),
             });
             return;
         }
@@ -93,8 +93,8 @@ function FolderComponent({
 
         if (!ok || !data) {
             addToast({
-                title: "Impossible de creer le dossier.",
-                message: "Veuillez réessayer plus tard.",
+                title: translation("createFolderErrorTitle"),
+                message: translation("retryLater"),
             });
             return;
         }
@@ -109,9 +109,9 @@ function FolderComponent({
 
     const handleDeleteFolder = async () => {
         const confirmed = await confirm({
-            title: "Supprimer le dossier",
-            message: `Êtes-vous sûr de vouloir supprimer le dossier "${folder.name}" et tout son contenu ?`,
-            confirmText: "Supprimer",
+            title: translation("deleteFolderTitle"),
+            message: translation("deleteFolderMessage", { name: folder.name }),
+            confirmText: translation("delete"),
         });
 
         if (!confirmed) {
@@ -135,7 +135,7 @@ function FolderComponent({
             return;
         }
 
-        const name = await confirmSanitizedName(renamedFolderName, confirm, "dossier");
+        const name = await confirmSanitizedName(renamedFolderName, confirm, translation("folderSubject"));
         if (name === null) {
             currentInput.current?.focus();
             return;
@@ -143,8 +143,8 @@ function FolderComponent({
 
         if (name !== folder.name && hasSiblingWithName(folders, folder.parent, name, folder.id)) {
             addToast({
-                title: `Un dossier nomme "${name}" existe deja ici.`,
-                message: "Veuillez choisir un autre nom.",
+                title: translation("duplicateFolderTitle", { name }),
+                message: translation("chooseAnotherName"),
                 type: "warning",
             });
             return;
@@ -158,8 +158,8 @@ function FolderComponent({
 
         if (!ok || !data) {
             addToast({
-                title: "Impossible de renommer le dossier.",
-                message: data && "message" in data && data.message ? data.message : "Veuillez réessayer plus tard.",
+                title: translation("renameFolderErrorTitle"),
+                message: data && "message" in data && data.message ? data.message : translation("retryLater"),
                 type: "error",
             });
             return;
@@ -173,8 +173,8 @@ function FolderComponent({
 
         setIsRenaming(false);
         addToast({
-            title: "Dossier renommé.",
-            message: `Le dossier s'appelle maintenant "${name}".`,
+            title: translation("folderRenamedTitle"),
+            message: translation("folderRenamedMessage", { name }),
             type: "success",
         });
     };
@@ -182,6 +182,22 @@ function FolderComponent({
     return (
         <div className='files-manager__folder-wrapper flex flex-column flex-align-start'>
             <div
+                role='button'
+                aria-label={translation("folderLabel", { name: folder.name })}
+                aria-expanded={isExpanded}
+                aria-current={isActive ? "page" : undefined}
+                tabIndex={0}
+                onKeyDown={(event) => {
+                    if (event.target !== event.currentTarget) {
+                        return;
+                    }
+
+                    if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setIsExpanded(!isExpanded || !isActive);
+                        setActiveFolderId(folder.id);
+                    }
+                }}
                 onClick={() => {
                     if (!document.startViewTransition) {
                         setIsExpanded(!isExpanded || !isActive);
@@ -209,7 +225,7 @@ function FolderComponent({
                             }}
                             className={"flex-grow files-manager__folder__input"}
                             type='text'
-                            aria-label={`Renommer le dossier ${folder.name}`}
+                            aria-label={translation("renameFolderLabel", { name: folder.name })}
                             value={renamedFolderName}
                             onClick={(event) => event.stopPropagation()}
                             onChange={(event) => setRenamedFolderName(event.currentTarget.value)}
@@ -229,7 +245,7 @@ function FolderComponent({
                 </span>
                 <div className='flex flex-align-center files-manager__folder__actions'>
                     <RoundedButton
-                        aria-label={`Ajouter un dossier dans ${folder.name}`}
+                        aria-label={translation("addFolderLabel", { name: folder.name })}
                         onClick={(e) => {
                             e.stopPropagation();
                             isSettingFolder.current = true;
@@ -241,7 +257,7 @@ function FolderComponent({
                         <>
                             {!isRenaming ? (
                                 <RoundedButton
-                                    aria-label={`Renommer le dossier ${folder.name}`}
+                                    aria-label={translation("renameFolderLabel", { name: folder.name })}
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         isSettingFolder.current = true;
@@ -253,7 +269,7 @@ function FolderComponent({
                             ) : null}
                             <RoundedButton
                                 type='danger'
-                                aria-label={`Supprimer le dossier ${folder.name}`}
+                                aria-label={translation("deleteFolderLabel", { name: folder.name })}
                                 onClick={handleDeleteFolder}>
                                 <DeleteIcon />
                             </RoundedButton>
@@ -285,8 +301,8 @@ function FolderComponent({
                         }}
                         className={"files-manager__folder__input flex-grow"}
                         type='text'
-                        aria-label={`Nom du nouveau dossier dans ${folder.name}`}
-                        placeholder='Folder Name'
+                        aria-label={translation("newFolderNameLabel", { name: folder.name })}
+                        placeholder={translation("folderNamePlaceholder")}
                         value={newFolderName}
                         onKeyDown={(e) => {
                             if (e.key === "Enter") {
@@ -296,7 +312,7 @@ function FolderComponent({
                         onChange={(e) => setNewFolderName(e.currentTarget.value)}
                     />
                     <RoundedButton
-                        aria-label={`Valider l'ajout d'un dossier dans ${folder.name}`}
+                        aria-label={translation("confirmAddFolderLabel", { name: folder.name })}
                         onClick={handleAddFolder}>
                         <AddIcon />
                     </RoundedButton>

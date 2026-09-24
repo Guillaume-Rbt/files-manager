@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from "preact/compat";
 import { FilesManager } from "../files-manager";
 import type { FolderType } from "../types";
+import { translation } from "../utils/functions";
 
 type FolderState = {
     folders: FolderType[];
@@ -38,7 +39,7 @@ async function fetchFolders() {
     request = fetch(`${FilesManager.endPoint}/folders`)
         .then(async (response) => {
             if (!response.ok) {
-                throw new Error("Impossible de charger les dossiers.");
+                throw new Error(translation("loadFoldersError"));
             }
 
             state = {
@@ -52,8 +53,7 @@ async function fetchFolders() {
             state = {
                 ...state,
                 loading: false,
-                error:
-                    error instanceof Error ? error : new Error(String(error)),
+                error: error instanceof Error ? error : new Error(String(error)),
                 fetched: true,
             };
         })
@@ -78,9 +78,7 @@ export function useFolders() {
 export function addFolderToCache(folder: FolderType) {
     state = {
         ...state,
-        folders: [...state.folders, folder].sort((a, b) =>
-            a.id.localeCompare(b.id),
-        ),
+        folders: [...state.folders, folder].sort((a, b) => a.id.localeCompare(b.id)),
         fetched: true,
     };
     notify();
@@ -89,18 +87,12 @@ export function addFolderToCache(folder: FolderType) {
 export function removeFolderFromCache(folderId: string) {
     state = {
         ...state,
-        folders: state.folders.filter(
-            (folder) =>
-                folder.id !== folderId && !folder.id.startsWith(`${folderId}/`),
-        ),
+        folders: state.folders.filter((folder) => folder.id !== folderId && !folder.id.startsWith(`${folderId}/`)),
     };
     notify();
 }
 
-export function renameFolderInCache(
-    folderId: string,
-    renamedFolder: FolderType,
-) {
+export function renameFolderInCache(folderId: string, renamedFolder: FolderType) {
     const descendantPrefix = `${folderId}/`;
     const renamedPrefix = `${renamedFolder.id}/`;
 

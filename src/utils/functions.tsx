@@ -1,3 +1,4 @@
+import { FilesManager } from "../files-manager";
 import type { FolderNode, FolderType } from "../types";
 
 export function sanitizeName(name: string) {
@@ -40,7 +41,7 @@ export function buildFolderTree(folders: FolderType[]): FolderNode[] {
 export async function confirmSanitizedName(
     name: string,
     confirm: (options: { message: string }) => Promise<boolean>,
-    subject: "fichier" | "dossier",
+    subject: string,
 ): Promise<string | null> {
     const sanitized = sanitizeName(name);
 
@@ -49,8 +50,20 @@ export async function confirmSanitizedName(
     }
 
     const confirmed = await confirm({
-        message: `Le nom du ${subject} contient des caractères invalides. Il sera automatiquement corrigé en <span class='bold'>${sanitized}</span>.`,
+        message: translation("sanitizeNameMessage", { subject, name: sanitized }),
     });
 
     return confirmed ? sanitized : null;
+}
+
+export function translation(
+    key: keyof typeof FilesManager.lang,
+    replacements: Record<string, string | number> = {},
+): string {
+    const template = FilesManager.lang[key] ?? key;
+
+    return Object.entries(replacements).reduce(
+        (translated, [name, value]) => translated.replaceAll(`{{${name}}}`, String(value)),
+        template,
+    );
 }

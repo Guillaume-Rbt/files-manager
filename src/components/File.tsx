@@ -4,13 +4,14 @@ import { useFetch } from "../hooks/useFetch";
 import type { FileType } from "../types";
 import { useState, useLayoutEffect, useRef, useEffect } from "preact/hooks";
 import { setActiveFileId, useFileActive } from "../stores/activeFile";
-import { confirmSanitizedName } from "../utils/functions";
+import { confirmSanitizedName, translation } from "../utils/functions";
 import { useConfirm } from "../hooks/useConfirm";
 import DeleteIcon from "../assets/icons/delete.svg?react";
 import AudioFileIcon from "../assets/icons/audio-file.svg?react";
 import VideoFileIcon from "../assets/icons/video-file.svg?react";
 import ArchiveIcon from "../assets/icons/archive.svg?react";
 import DocumentIcon from "../assets/icons/file-icon.svg?react";
+import DefaultFileIcon from "../assets/icons/default-file.svg?react";
 
 export function File({
     file,
@@ -47,7 +48,7 @@ export function File({
     }, [shouldRename, onRenameStarted]);
 
     const handleRename = async () => {
-        const sanitizedName = await confirmSanitizedName(newName, confirm, "fichier");
+        const sanitizedName = await confirmSanitizedName(newName, confirm, translation("fileSubject"));
         if (sanitizedName === null) {
             renameInputElement.current?.focus();
             return;
@@ -82,6 +83,21 @@ export function File({
 
     return (
         <div
+            role='button'
+            aria-label={translation("fileLabel", { name: name ?? "" })}
+            aria-pressed={isActive}
+            tabIndex={0}
+            onKeyDown={(event) => {
+                if (event.target !== event.currentTarget) {
+                    return;
+                }
+
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setActiveFileId(file.id);
+                }
+            }}
+            onDblClick={() => FilesManager.resolve(`${FilesManager.rootDir}/${file.id}`)}
             onClick={() => {
                 setActiveFileId(file.id);
             }}
@@ -91,7 +107,7 @@ export function File({
                 <input
                     ref={renameInputElement}
                     className='file__name'
-                    aria-label={`Renommer le fichier ${name}`}
+                    aria-label={translation("renameFileLabel", { name: name ?? "" })}
                     value={newName}
                     onInput={(event) => setNewName(event.currentTarget.value)}
                     onKeyDown={(event) => {
@@ -107,9 +123,18 @@ export function File({
                 />
             ) : (
                 <span
+                    role='button'
+                    tabIndex={0}
+                    aria-label={translation("renameFileLabel", { name: name ?? "" })}
                     onDblClick={() => window.open(`${FilesManager.rootDir}/${file.id}`, "_blank")}
                     onClick={() => {
                         setRenameMode(true);
+                    }}
+                    onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            setRenameMode(true);
+                        }
                     }}
                     className='file__name'>
                     {name}
@@ -118,7 +143,7 @@ export function File({
             <button
                 type='button'
                 className='file__delete'
-                aria-label={`Supprimer le fichier ${name}`}
+                aria-label={translation("deleteFileLabel", { name: name ?? "" })}
                 onClick={() => {
                     onDeleted(file.id);
                 }}>
@@ -164,7 +189,7 @@ function FileIcon({ file }: { file: FileType }) {
             case "archive":
                 return <ArchiveIcon />;
             default:
-                return <DocumentIcon />;
+                return <DefaultFileIcon />;
         }
     };
 

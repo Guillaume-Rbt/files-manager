@@ -1,4 +1,5 @@
 import { useModalContext } from "./useModalContext";
+import { translation } from "../utils/functions";
 
 export function useAlert() {
     const modal = useModalContext();
@@ -6,6 +7,6 @@ export function useAlert() {
     return (options: { title?: string; message: string }) =>
         modal({
             ...options,
-            buttons: [{ label: "OK", type: "primary", action: "resolve" }],
+            buttons: [{ label: translation("ok"), type: "primary", action: "resolve" }],
         });
 }

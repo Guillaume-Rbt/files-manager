@@ -1,4 +1,5 @@
 import { useModalContext } from "./useModalContext";
+import { translation } from "../utils/functions";
 
 export function useConfirm() {
     const modal = useModalContext();
@@ -7,8 +8,8 @@ export function useConfirm() {
         modal({
             ...options,
             buttons: [
-                { label: options.confirmText || "Confirmer", type: "secondary", action: "resolve" },
-                { label: options.cancelText || "Annuler", type: "primary", action: "reject" },
+                { label: options.confirmText || translation("confirm"), type: "secondary", action: "resolve" },
+                { label: options.cancelText || translation("cancel"), type: "primary", action: "reject" },
             ],
         });
 }

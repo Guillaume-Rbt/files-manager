@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 import { useToast } from "../ui/Toast";
 import { FilesManager } from "../files-manager";
 import { useFolderActive } from "../stores/activeFolder";
@@ -9,14 +9,14 @@ import { addFilesToCache, removeFileFromCache, renameFileInCache, useFiles } fro
 import { FilesUploading } from "./FilesUploading";
 import { FilesToolbar } from "./FilesToolbar";
 import { setActiveFileId, useFileActive } from "../stores/activeFile";
-import { sanitizeName } from "../utils/functions";
+import { sanitizeName, translation } from "../utils/functions";
 import { useAlert } from "../hooks/useAlert";
 import { useConfirm } from "../hooks/useConfirm";
+import { Footer } from "./Footer";
 
 export function Files() {
     const activeFolderId = useFolderActive();
     const activeFileId = useFileActive();
-
     const { files, loading, ok } = useFiles(activeFolderId);
     const { request: uploadFiles } = useFetch<{ files: FileType[] }>(`${FilesManager.endPoint}/files`, undefined, true);
     const { addToast } = useToast();
@@ -30,8 +30,12 @@ export function Files() {
     const activeFile = files.find((file) => file.id === activeFileId);
     const normalizedSearchTerm = searchTerm.trim().toLocaleLowerCase();
     const visibleFiles = normalizedSearchTerm
-        ? files.filter((file) => file.name.toLocaleLowerCase().includes(normalizedSearchTerm))
+        ? files.filter((file) => file.name.toLocaleLowerCase().split(".")[0].includes(normalizedSearchTerm))
         : files;
+
+    useEffect(() => {
+        setActiveFileId(null);
+    }, [activeFolderId]);
 
     const handleFilesAdded = (newFiles: FileType[]) => {
         addFilesToCache(activeFolderId, newFiles);
@@ -49,10 +53,10 @@ export function Files() {
 
     const handleDelete = async (id: string) => {
         const confirmed = await confirm({
-            title: "Supprimer le fichier",
-            message: `Êtes-vous sûr de vouloir supprimer le fichier ${files.find((f) => f.id === id)?.name} ?`,
-            confirmText: "Supprimer",
-            cancelText: "Annuler",
+            title: translation("deleteFileTitle"),
+            message: translation("deleteFileMessage", { name: files.find((f) => f.id === id)?.name ?? "" }),
+            confirmText: translation("delete"),
+            cancelText: translation("cancel"),
         });
         if (!confirmed) {
             return;
@@ -97,9 +101,9 @@ export function Files() {
 
         if (renamedFileNames.length > 0) {
             await alert({
-                title: "Noms de fichiers corrigés",
+                title: translation("correctedFileNamesTitle"),
                 message: renamedFileNames
-                    .map(({ original, sanitized }) => `"${original}" a été renommé en "${sanitized}"`)
+                    .map(({ original, sanitized }) => translation("correctedFileName", { original, sanitized }))
                     .join("<br>"),
             });
         }
@@ -114,8 +118,8 @@ export function Files() {
 
             if (!ok || !data) {
                 addToast({
-                    title: "Impossible d'ajouter le fichier.",
-                    message: "Veuillez réessayer plus tard.",
+                    title: translation("addFileErrorTitle"),
+                    message: translation("retryLater"),
                 });
                 return;
             }
@@ -153,8 +157,12 @@ export function Files() {
                     setIsDragging(false);
                 }}
                 className={`files-manager__files__files-wrapper w-full flex-grow ${isDragging ? "files-manager__files__files-wrapper--is-dragging" : ""}`}>
-                {loading && <div>Loading...</div>}
-                {!ok && <div>Error: Impossible de charger les fichiers.</div>}
+                {loading && <div>{translation("loading")}</div>}
+                {!ok && (
+                    <div>
+                        {translation("error")}: {translation("loadFilesError")}
+                    </div>
+                )}
                 {visibleFiles.map((file) => (
                     <File
                         key={file.id}
@@ -166,6 +174,7 @@ export function Files() {
                     />
                 ))}
             </div>
+            <Footer></Footer>
             {uploadingFileNames.length > 0 && <FilesUploading uploadingFileNames={uploadingFileNames} />}
         </div>
     );

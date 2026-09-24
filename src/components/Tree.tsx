@@ -2,7 +2,7 @@ import { useMemo } from "preact/hooks";
 import type { FolderType } from "../types";
 import { Folder } from "./Folder";
 import { addFolderToCache, removeFolderFromCache, renameFolderInCache, useFolders } from "../stores/folders";
-import { buildFolderTree } from "../utils/functions";
+import { buildFolderTree, translation } from "../utils/functions";
 
 export function Tree() {
     const { folders, loading, error } = useFolders();
@@ -23,7 +23,7 @@ export function Tree() {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div>{translation("loading")}</div>;
     }
 
     if (error) {

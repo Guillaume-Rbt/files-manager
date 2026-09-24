@@ -4,7 +4,7 @@ import { useFetch } from "../hooks/useFetch";
 import { useToast } from "../ui/Toast";
 import type { FileType, FolderNode } from "../types";
 import { useFolders } from "../stores/folders";
-import { buildFolderTree } from "../utils/functions";
+import { buildFolderTree, translation } from "../utils/functions";
 import FolderOpenIcon from "../assets/icons/folder-open.svg?react";
 import FolderIcon from "../assets/icons/folder.svg?react";
 import CloseIcon from "../assets/icons/close.svg?react";
@@ -114,8 +114,8 @@ export function FilesToolbar({
 
         if (!ok || !data) {
             addToast({
-                title: "Impossible de déplacer le fichier.",
-                message: "Le dossier est peut-être déjà utilisé ou inaccessible.",
+                title: translation("moveFileErrorTitle"),
+                message: translation("moveFileErrorMessage"),
                 type: "error",
             });
             return;
@@ -131,7 +131,7 @@ export function FilesToolbar({
             <div className='files-manager__toolbar__actions flex flex-align-center w-full'>
                 <button type='button' className={"btn btn-secondary"} disabled={!activeFile} onClick={onRename}>
                     <RenameIcon />
-                    Renommer
+                    {translation("rename")}
                 </button>
                 <div className='relative'>
                     <button
@@ -141,7 +141,7 @@ export function FilesToolbar({
                         aria-expanded={isMoveMenuOpen}
                         aria-haspopup='menu'
                         onClick={openMoveMenu}>
-                        Déplacer
+                        {translation("move")}
                         <ChevronIcon className={`isMoveMenuOpen ${isMoveMenuOpen ? " rotate-90" : ""}`} />
                     </button>
                     {isMoveMenuOpen && activeFile && (
@@ -149,17 +149,17 @@ export function FilesToolbar({
                             id='files-manager-move-menu'
                             className='files-manager__move-menu absolute'
                             role='dialog'
-                            aria-label={`Déplacer le fichier ${activeFile.name}`}>
+                            aria-label={translation("moveFileLabel", { name: activeFile.name })}>
                             <div className='files-manager__move-menu__header'>
-                                <strong>Déplacer « {activeFile.name} »</strong>
+                                <strong>{translation("moveFileTitle", { name: activeFile.name })}</strong>
                                 <RoundedButton
-                                    aria-label='Fermer le menu de déplacement'
+                                    aria-label={translation("closeMoveMenu")}
                                     onClick={() => setIsMoveMenuOpen(false)}>
                                     <CloseIcon />
                                 </RoundedButton>
                             </div>
                             {foldersLoading ? (
-                                <p>Chargement des dossiers...</p>
+                                <p>{translation("loadingFolders")}</p>
                             ) : (
                                 <ul className='files-manager__move-tree'>
                                     {folderTree.map((folder) => (
@@ -177,7 +177,7 @@ export function FilesToolbar({
                                 className='files-manager__move-confirm btn btn-primary'
                                 disabled={!canMove}
                                 onClick={handleMove}>
-                                Confirmer le déplacement
+                                {translation("confirmMove")}
                             </button>
                         </div>
                     )}
@@ -188,16 +188,16 @@ export function FilesToolbar({
                     disabled={!activeFile}
                     onClick={() => onDelete(activeFile?.id ?? "")}>
                     <DeleteIcon />
-                    Supprimer
+                    {translation("delete")}
                 </button>
 
                 <label className='ml-auto files-manager__toolbar__search'>
                     <input
                         type='search'
                         value={searchTerm}
-                        aria-label='Rechercher un fichier'
+                        aria-label={translation("searchFile")}
                         onInput={(event) => onSearchChange(event.currentTarget.value)}
-                        placeholder='Rechercher un fichier'
+                        placeholder={translation("searchFile")}
                     />
                 </label>
             </div>
