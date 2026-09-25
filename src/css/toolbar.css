@@ -6,6 +6,7 @@
     padding: 0.75rem 1rem;
     border-bottom: 1px solid color-mix(in srgb, var(--fm-primary) 18%, transparent);
     background: #fff;
+    flex-wrap: wrap;
 }
 
 .files-manager__toolbar__actions {
@@ -28,6 +29,7 @@
     color: var(--fm-color);
     background: #fff;
     font-size: 1rem;
+    flex-shrink: 0;
 }
 .files-manager__move-tree,
 .files-manager__move-folder-children {

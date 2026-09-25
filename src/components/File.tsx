@@ -6,12 +6,21 @@ import { useState, useLayoutEffect, useRef, useEffect } from "preact/hooks";
 import { setActiveFileId, useFileActive } from "../stores/activeFile";
 import { confirmSanitizedName, translation } from "../utils/functions";
 import { useConfirm } from "../hooks/useConfirm";
+import { useToast } from "../ui/Toast";
+import { useFiles } from "../stores/files";
 import DeleteIcon from "../assets/icons/delete.svg?react";
 import AudioFileIcon from "../assets/icons/audio-file.svg?react";
 import VideoFileIcon from "../assets/icons/video-file.svg?react";
 import ArchiveIcon from "../assets/icons/archive.svg?react";
 import DocumentIcon from "../assets/icons/file-icon.svg?react";
 import DefaultFileIcon from "../assets/icons/default-file.svg?react";
+
+type FileResponse = FileType | { message?: string };
+
+// Checks whether a file named `name` already exists among `candidates`, excluding `excludeId`.
+function hasSiblingFileWithName(candidates: FileType[], excludeId: string, name: string) {
+    return candidates.some((candidate) => candidate.id !== excludeId && candidate.name === name);
+}
 
 export function File({
     file,
@@ -27,12 +36,15 @@ export function File({
     onRenameStarted?: () => void;
 }) {
     const name = file.name.split("/").pop();
-    const { request: renameFile } = useFetch<FileType>(`${FilesManager.endPoint}/files`, undefined, true);
+    const { request: renameFile } = useFetch<FileResponse>(`${FilesManager.endPoint}/files`, undefined, true);
     const [renameMode, setRenameMode] = useState(false);
     const [newName, setNewName] = useState(name ?? "");
     const renameInputElement = useRef<HTMLInputElement>(null);
     const isActive = useFileActive() === file.id;
     const confirm = useConfirm();
+    const { addToast } = useToast();
+    const { files: siblingFiles } = useFiles(file.parent);
+    const waitValidation = useRef(true);
 
     useLayoutEffect(() => {
         if (renameInputElement.current) {
@@ -48,20 +60,36 @@ export function File({
     }, [shouldRename, onRenameStarted]);
 
     const handleRename = async () => {
-        const sanitizedName = await confirmSanitizedName(newName, confirm, translation("fileSubject"));
-        if (sanitizedName === null) {
-            renameInputElement.current?.focus();
+        if (!waitValidation.current) {
             return;
         }
+        waitValidation.current = false;
 
-        if (!sanitizedName || sanitizedName === name) {
-            setNewName(name!);
+        const sanitizedName = await confirmSanitizedName(newName, confirm, translation("fileSubject"));
+
+        if (sanitizedName === name) {
             setRenameMode(false);
+            return;
+        }
+        if (sanitizedName === null) {
+            setRenameMode(true);
+            renameInputElement.current?.focus();
             return;
         }
 
         const extension = name?.split(".").pop();
         const finalName = sanitizedName.endsWith(`.${extension}`) ? sanitizedName : `${sanitizedName}.${extension}`;
+
+        if (finalName !== name && hasSiblingFileWithName(siblingFiles, file.id, finalName)) {
+            addToast({
+                title: translation("duplicateFileTitle", { name: finalName }),
+                message: translation("chooseAnotherName"),
+                type: "warning",
+            });
+            setRenameMode(true);
+            renameInputElement.current?.focus();
+            return;
+        }
 
         const { data, ok } = await renameFile({
             method: "PATCH",
@@ -73,12 +101,22 @@ export function File({
         });
 
         if (!ok || !data) {
+            addToast({
+                title: translation("renameFileErrorTitle"),
+                message: data && "message" in data && data.message ? data.message : translation("retryLater"),
+                type: "error",
+            });
             setNewName(name ?? "");
             return;
         }
 
-        onRenamed(file.id, data);
+        onRenamed(file.id, data as FileType);
         setRenameMode(false);
+        addToast({
+            title: translation("fileRenamedTitle"),
+            message: translation("fileRenamedMessage", { name: finalName }),
+            type: "success",
+        });
     };
 
     return (
@@ -109,7 +147,10 @@ export function File({
                     className='file__name'
                     aria-label={translation("renameFileLabel", { name: name ?? "" })}
                     value={newName}
-                    onInput={(event) => setNewName(event.currentTarget.value)}
+                    onInput={(event) => {
+                        waitValidation.current = true;
+                        setNewName(event.currentTarget.value);
+                    }}
                     onKeyDown={(event) => {
                         if (event.key === "Enter") {
                             handleRename();

@@ -1,7 +1,7 @@
 import { FilesManager } from "../files-manager";
 import type { FolderNode, FolderType } from "../types";
 
-export function sanitizeName(name: string) {
+export function sanitizeName(name: string, useFallback = false) {
     const sanitzed = name
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -12,7 +12,7 @@ export function sanitizeName(name: string) {
     const date = new Date();
     const fallbackName = `name-${date.toLocaleDateString().replace(/\//g, "-")}`;
 
-    return sanitzed || fallbackName;
+    return sanitzed || (useFallback ? fallbackName : null);
 }
 
 // Builds a folder tree with a virtual "/" root node from a flat folder list.
@@ -45,7 +45,7 @@ export async function confirmSanitizedName(
 ): Promise<string | null> {
     const sanitized = sanitizeName(name);
 
-    if (name === sanitized) {
+    if (name === sanitized || !sanitized) {
         return sanitized;
     }
 

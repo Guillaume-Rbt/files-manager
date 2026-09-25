@@ -61,6 +61,12 @@ export type Translation = {
     renameFolderErrorTitle: string;
     folderRenamedTitle: string;
     folderRenamedMessage: string;
+    duplicateFileTitle: string;
+    renameFileErrorTitle: string;
+    fileRenamedTitle: string;
+    fileRenamedMessage: string;
+    duplicateFilesDropTitle: string;
+    duplicateFilesDropMessage: string;
     sanitizeNameMessage: string;
     retryLater: string;
     closeMessage: string;

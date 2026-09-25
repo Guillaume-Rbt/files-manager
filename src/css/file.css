@@ -23,6 +23,7 @@
 .file__name {
     margin-bottom: auto;
     word-wrap: break-word;
+    text-align: center;
 }
 
 .file__delete {

@@ -8,7 +8,7 @@ export function FilesManagerComponent({ hidden }: { hidden: boolean }) {
     return (
         <ModalProvider>
             <div className='file-manager__overlay'>
-                <div className={`files-manager flex ${hidden ? "hidden" : ""}`}>
+                <div className={`files-manager flex relative ${hidden ? "hidden" : ""}`}>
                     <ToastProvider>
                         <Tree />
                         <Files />

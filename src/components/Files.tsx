@@ -87,16 +87,34 @@ export function Files() {
         const formData = new FormData();
         formData.append("parent", activeFolderId ?? "");
 
+        const existingNames = new Set(files.map((file) => file.name));
+        const seenNames = new Set<string>();
         const sanitizedFileNames: string[] = [];
         const renamedFileNames: { original: string; sanitized: string }[] = [];
+        const duplicateFileNames: string[] = [];
 
         for (const file of droppedFiles) {
-            const sanitized = sanitizeName(file.name);
+            const sanitized = sanitizeName(file.name, true) as string;
+
+            if (existingNames.has(sanitized) || seenNames.has(sanitized)) {
+                duplicateFileNames.push(sanitized);
+                continue;
+            }
+
+            seenNames.add(sanitized);
             sanitizedFileNames.push(sanitized);
             formData.append("files[]", file, sanitized);
             if (sanitized !== file.name) {
                 renamedFileNames.push({ original: file.name, sanitized });
             }
+        }
+
+        if (duplicateFileNames.length > 0) {
+            addToast({
+                title: translation("duplicateFilesDropTitle"),
+                message: translation("duplicateFilesDropMessage", { names: duplicateFileNames.join(", ") }),
+                type: "warning",
+            });
         }
 
         if (renamedFileNames.length > 0) {
@@ -106,6 +124,10 @@ export function Files() {
                     .map(({ original, sanitized }) => translation("correctedFileName", { original, sanitized }))
                     .join("<br>"),
             });
+        }
+
+        if (sanitizedFileNames.length === 0) {
+            return;
         }
 
         setUploadingFileNames((current) => [...current, ...sanitizedFileNames]);

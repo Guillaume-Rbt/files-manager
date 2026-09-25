@@ -43,6 +43,12 @@ export const fr = {
     renameFolderErrorTitle: "Impossible de renommer le dossier.",
     folderRenamedTitle: "Dossier renommé.",
     folderRenamedMessage: 'Le dossier s\'appelle maintenant "{{name}}".',
+    duplicateFileTitle: 'Un fichier nommé "{{name}}" existe déjà ici.',
+    renameFileErrorTitle: "Impossible de renommer le fichier.",
+    fileRenamedTitle: "Fichier renommé.",
+    fileRenamedMessage: 'Le fichier s\'appelle maintenant "{{name}}".',
+    duplicateFilesDropTitle: "Certains fichiers n'ont pas été ajoutés.",
+    duplicateFilesDropMessage: "Ces fichiers existent déjà dans ce dossier : {{names}}.",
     sanitizeNameMessage:
         "Le nom du {{subject}} contient des caractères invalides. Il sera automatiquement corrigé en <span class='bold'>{{name}}</span>.",
     retryLater: "Veuillez réessayer plus tard.",

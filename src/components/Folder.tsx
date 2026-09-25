@@ -48,8 +48,8 @@ function FolderComponent({
     const [isRenaming, setIsRenaming] = useState(false);
     const [renamedFolderName, setRenamedFolderName] = useState(folder.name);
     const currentInput = useRef<HTMLInputElement>(null);
-    const isSettingFolder = useRef(false);
     const confirm = useConfirm();
+    const waitValidation = useRef(true);
 
     const isActive = useFolderActive() === folder.id;
 
@@ -60,15 +60,14 @@ function FolderComponent({
     }, [addFolder, isRenaming]);
 
     const handleAddFolder = async () => {
-        if (!isSettingFolder.current) {
+        if (!waitValidation.current) {
             return;
         }
-
+        waitValidation.current = false;
         if (newFolderName.trim() === "") {
             setAddFolder(false);
             return;
         }
-
         const effectiveName = await confirmSanitizedName(newFolderName, confirm, translation("folderSubject"));
         if (effectiveName === null) {
             currentInput.current?.focus();
@@ -99,7 +98,6 @@ function FolderComponent({
             return;
         }
 
-        isSettingFolder.current = false;
         onFolderAdded(data as FolderType);
 
         setIsExpanded(true);
@@ -131,12 +129,20 @@ function FolderComponent({
     };
 
     const handleRenameFolder = async () => {
-        if (!isSettingFolder.current) {
+        if (!waitValidation.current) {
+            return;
+        }
+        waitValidation.current = false;
+
+        const name = await confirmSanitizedName(renamedFolderName, confirm, translation("folderSubject"));
+
+        if (name === folder.name) {
+            setIsRenaming(false);
             return;
         }
 
-        const name = await confirmSanitizedName(renamedFolderName, confirm, translation("folderSubject"));
         if (name === null) {
+            setIsRenaming(true);
             currentInput.current?.focus();
             return;
         }
@@ -169,7 +175,6 @@ function FolderComponent({
         if (isActive) {
             setActiveFolderId((data as FolderType).id);
         }
-        isSettingFolder.current = false;
 
         setIsRenaming(false);
         addToast({
@@ -220,7 +225,6 @@ function FolderComponent({
                         <input
                             ref={currentInput}
                             onBlur={() => {
-                                if (!isSettingFolder.current) return;
                                 handleRenameFolder();
                             }}
                             className={"flex-grow files-manager__folder__input"}
@@ -228,7 +232,10 @@ function FolderComponent({
                             aria-label={translation("renameFolderLabel", { name: folder.name })}
                             value={renamedFolderName}
                             onClick={(event) => event.stopPropagation()}
-                            onChange={(event) => setRenamedFolderName(event.currentTarget.value)}
+                            onChange={(event) => {
+                                waitValidation.current = true;
+                                setRenamedFolderName(event.currentTarget.value);
+                            }}
                             onKeyDown={(event) => {
                                 if (event.key === "Enter") {
                                     void handleRenameFolder();
@@ -248,7 +255,6 @@ function FolderComponent({
                         aria-label={translation("addFolderLabel", { name: folder.name })}
                         onClick={(e) => {
                             e.stopPropagation();
-                            isSettingFolder.current = true;
                             setAddFolder(!addFolder);
                         }}>
                         <AddIcon />
@@ -260,7 +266,6 @@ function FolderComponent({
                                     aria-label={translation("renameFolderLabel", { name: folder.name })}
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        isSettingFolder.current = true;
                                         setRenamedFolderName(folder.name);
                                         setIsRenaming(true);
                                     }}>
@@ -296,7 +301,6 @@ function FolderComponent({
                     <input
                         ref={currentInput}
                         onBlur={(e) => {
-                            if (!isSettingFolder.current) return;
                             handleAddFolder();
                         }}
                         className={"files-manager__folder__input flex-grow"}
@@ -309,7 +313,10 @@ function FolderComponent({
                                 handleAddFolder();
                             }
                         }}
-                        onChange={(e) => setNewFolderName(e.currentTarget.value)}
+                        onChange={(e) => {
+                            waitValidation.current = true;
+                            setNewFolderName(e.currentTarget.value);
+                        }}
                     />
                     <RoundedButton
                         aria-label={translation("confirmAddFolderLabel", { name: folder.name })}
