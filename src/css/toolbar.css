@@ -6,12 +6,16 @@
     padding: 0.75rem 1rem;
     border-bottom: 1px solid color-mix(in srgb, var(--fm-primary) 18%, transparent);
     background: #fff;
-    flex-wrap: wrap;
 }
 
 .files-manager__toolbar__actions {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.files-manager__toolbar__actions *:has(+ .files-manager__toolbar__search) {
+    margin-right: auto;
 }
 
 .files-manager__toolbar__search {

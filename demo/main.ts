@@ -7,7 +7,7 @@ const fm = new FilesManager();
 fm.defineElement("files-manager");
 
 const fmElement = document.querySelector("files-manager") as HTMLElement & {
-    changeVisibility: () => Promise<string> | null;
+    open: () => Promise<string> | null;
 };
 
 const toggleButton = document.querySelector(".toggle");
@@ -16,10 +16,9 @@ toggleButton?.addEventListener("click", () => {
 });
 
 const toggleVisibility = async () => {
-    const promise = fmElement?.changeVisibility();
+    const promise = fmElement?.open();
 
     if (promise) {
-        const result = await promise;
-        alert(result);
+        promise.then((result) => alert(result)).catch((error) => console.error(error));
     }
 };

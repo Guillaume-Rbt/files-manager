@@ -9,6 +9,17 @@ export default defineConfig({
             jsxRuntime: "classic-preact",
         }
     })],
+    build: {
+        copyPublicDir: false,
+        lib: {
+            entry: "src/files-manager.tsx",
+            formats: ["es"],
+            fileName: "index",
+        },
+        rollupOptions: {
+            external: ["preact", "preact/hooks", "preact/jsx-runtime"],
+        },
+    },
     server: {
         proxy: {
             "/api": "http://localhost:8000/",

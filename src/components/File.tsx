@@ -135,7 +135,9 @@ export function File({
                     setActiveFileId(file.id);
                 }
             }}
-            onDblClick={() => FilesManager.resolve(`${FilesManager.rootDir}/${file.id}`)}
+            onDblClick={() =>
+                FilesManager.resolve ? FilesManager.resolve(`${FilesManager.rootDir}/${file.id}`) : null
+            }
             onClick={() => {
                 setActiveFileId(file.id);
             }}

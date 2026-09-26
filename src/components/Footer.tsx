@@ -9,7 +9,9 @@ export function Footer() {
         <footer className='files-manager__footer flex flex-align-center flex-justify-end'>
             <button
                 aria-label={translation("chooseFileLabel", { id: activeFileId ?? "" })}
-                onClick={() => FilesManager.resolve(`${FilesManager.rootDir}/${activeFileId!}`)}
+                onClick={() =>
+                    FilesManager.resolve ? FilesManager.resolve(`${FilesManager.rootDir}/${activeFileId!}`) : null
+                }
                 type='button'
                 disabled={!activeFileId}
                 className={"btn btn-primary"}>
@@ -17,7 +19,7 @@ export function Footer() {
             </button>
             <button
                 aria-label={translation("cancel")}
-                onClick={() => FilesManager.reject()}
+                onClick={() => (FilesManager.resolve ? FilesManager.resolve(null) : null)}
                 type='button'
                 className='btn btn-secondary'>
                 {translation("cancel")}

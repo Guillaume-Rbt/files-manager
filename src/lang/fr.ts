@@ -13,6 +13,7 @@ export const fr = {
     newFolderNameLabel: "Nom du nouveau dossier dans {{name}}",
     confirmAddFolderLabel: "Valider l'ajout d'un dossier dans {{name}}",
     folderNamePlaceholder: "Nom du dossier",
+    addFiles: "Ajouter des fichiers",
     chooseFileLabel: "Choisir le fichier {{id}}",
     chooseFile: "Choisir ce fichier",
     confirm: "Confirmer",

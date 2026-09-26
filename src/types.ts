@@ -71,4 +71,5 @@ export type Translation = {
     retryLater: string;
     closeMessage: string;
     ok: string;
+    addFiles: string;
 };

@@ -1,7 +1,7 @@
 {
     "name": "files-manager",
     "version": "1.0.0",
-    "description": "",
+    "description": "Web component file manager built with Preact.",
     "homepage": "https://github.com/Guillaume-Rbt/files-manager#readme",
     "bugs": {
         "url": "https://github.com/Guillaume-Rbt/files-manager/issues"
@@ -13,11 +13,26 @@
     "license": "ISC",
     "author": "",
     "type": "module",
-    "main": "index.js",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/files-manager.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/files-manager.d.ts",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        },
+        "./style.css": "./dist/index.css"
+    },
+    "files": [
+        "dist"
+    ],
     "scripts": {
         "dev": "vite --force",
+        "build": "vite build && tsc --project tsconfig.build.json",
+        "prepare": "npm run build",
         "server": "node ./server/server.ts",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "npm run build"
     },
     "devDependencies": {
         "@fastify/static": "^10.1.3",
@@ -31,8 +46,10 @@
         "vite-plugin-svgr": "^5.2.0",
         "@fastify/multipart": "^10.1.1"
     },
+    "peerDependencies": {
+        "preact": "^10.29.8"
+    },
     "dependencies": {
-       
         "preact": "^10.29.8"
     }
 }

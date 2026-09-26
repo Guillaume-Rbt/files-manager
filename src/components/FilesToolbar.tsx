@@ -13,6 +13,8 @@ import DeleteIcon from "../assets/icons/delete.svg?react";
 import ChevronIcon from "../assets/icons/chevron.svg?react";
 import { RoundedButton } from "../ui/RoundedButton";
 import { CONSTANTS } from "../utils/constants";
+import MoveFileIcon from "../assets/icons/move-file.svg?react";
+import AddFileIcon from "../assets/icons/add.svg?react";
 
 function FolderOption({
     folder,
@@ -56,6 +58,7 @@ export function FilesToolbar({
     onRename,
     onDelete,
     onMoved,
+    onAddFiles,
 }: {
     activeFile: FileType | undefined;
     currentFolderId: string | null;
@@ -64,6 +67,7 @@ export function FilesToolbar({
     onRename: () => void;
     onDelete: (id: string) => void;
     onMoved: (file: FileType, previousFolderId: string | null) => void;
+    onAddFiles: (addedFiles: File[]) => void;
 }) {
     const [isMoveMenuOpen, setIsMoveMenuOpen] = useState(false);
     const [destinationId, setDestinationId] = useState<string | null>(null);
@@ -141,6 +145,7 @@ export function FilesToolbar({
                         aria-expanded={isMoveMenuOpen}
                         aria-haspopup='menu'
                         onClick={openMoveMenu}>
+                        <MoveFileIcon />
                         {translation("move")}
                         <ChevronIcon className={`isMoveMenuOpen ${isMoveMenuOpen ? " rotate-90" : ""}`} />
                     </button>
@@ -191,7 +196,19 @@ export function FilesToolbar({
                     {translation("delete")}
                 </button>
 
-                <label className='ml-auto files-manager__toolbar__search'>
+                <label className='btn btn-primary'>
+                    <AddFileIcon />
+                    {translation("addFiles")}
+                    <input
+                        aria-label={translation("addFiles")}
+                        hidden
+                        type='file'
+                        multiple
+                        onChange={(e) => onAddFiles(e.currentTarget.files ? Array.from(e.currentTarget.files) : [])}
+                    />
+                </label>
+
+                <label className='files-manager__toolbar__search'>
                     <input
                         type='search'
                         value={searchTerm}

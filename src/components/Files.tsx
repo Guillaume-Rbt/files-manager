@@ -77,13 +77,7 @@ export function Files() {
         removeFileFromCache(activeFolderId, id);
     };
 
-    const handleDrop = async (event: DragEvent) => {
-        event.preventDefault();
-        if (!event.dataTransfer?.files?.length) {
-            return;
-        }
-
-        const droppedFiles = Array.from(event.dataTransfer.files);
+    const handleAddFiles = async (addedFiles: File[]) => {
         const formData = new FormData();
         formData.append("parent", activeFolderId ?? "");
 
@@ -93,7 +87,7 @@ export function Files() {
         const renamedFileNames: { original: string; sanitized: string }[] = [];
         const duplicateFileNames: string[] = [];
 
-        for (const file of droppedFiles) {
+        for (const file of addedFiles) {
             const sanitized = sanitizeName(file.name, true) as string;
 
             if (existingNames.has(sanitized) || seenNames.has(sanitized)) {
@@ -164,6 +158,7 @@ export function Files() {
                 onDelete={handleDelete}
                 onRename={() => setRenameFileId(activeFile?.id ?? null)}
                 onMoved={handleFileMoved}
+                onAddFiles={handleAddFiles}
             />
             <div
                 onDragOver={(e) => {
@@ -174,8 +169,13 @@ export function Files() {
                     e.preventDefault();
                     setIsDragging(false);
                 }}
-                onDrop={(e) => {
-                    handleDrop(e);
+                onDrop={(e: DragEvent) => {
+                    e.preventDefault();
+                    if (!e.dataTransfer?.files?.length) {
+                        return;
+                    }
+                    const droppedFiles = Array.from(e.dataTransfer.files);
+                    handleAddFiles(droppedFiles);
                     setIsDragging(false);
                 }}
                 className={`files-manager__files__files-wrapper w-full flex-grow ${isDragging ? "files-manager__files__files-wrapper--is-dragging" : ""}`}>
