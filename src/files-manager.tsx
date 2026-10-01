@@ -5,19 +5,16 @@ import { render } from "preact";
 import { FilesManagerComponent } from "./FilesManager";
 import { fr as FR } from "./lang/fr";
 
-import type { Translation } from "./types";
-
+import type { FileType, Translation } from "./types";
 
 export type FilesManagerOptions = {
     lang?: Translation;
 };
 
-
 export interface FilesManagerElement extends HTMLElement {
     open(): Promise<string | null>;
     close(): void;
 }
-
 
 class FilesManager {
     static lang: Translation = FR;
@@ -28,33 +25,28 @@ class FilesManager {
 
     static resolve: ((value: string | null) => void) | null = null;
     static reject: ((reason?: unknown) => void) | null = null;
-
+    static filters: [keyof FileType, any][];
 
     constructor(options: FilesManagerOptions = {}) {
         FilesManager.lang = options.lang ?? FR;
     }
 
-
     defineElement(name: string = "files-manager") {
-
         class FilesManagerHTMLElement extends HTMLElement {
             hidden = true;
-
 
             connectedCallback() {
                 this.classList.add("files-manager");
                 this.render();
             }
 
-
             static get observedAttributes() {
                 return ["root-dir", "endpoint"];
             }
 
+            open(options: { filter: { [key in keyof FileType]?: any } }): Promise<string | null> {
+                FilesManager.filters = Object.entries(options.filter) as [keyof FileType, any][];
 
-            open(): Promise<string | null> {
-
-         
                 if (FilesManager.promise) {
                     return FilesManager.promise;
                 }
@@ -62,12 +54,10 @@ class FilesManager {
                 this.hidden = false;
                 this.render();
 
-                FilesManager.promise = new Promise<string | null>(
-                    (resolve, reject) => {
-                        FilesManager.resolve = resolve;
-                        FilesManager.reject = reject;
-                    }
-                ).finally(() => {
+                FilesManager.promise = new Promise<string | null>((resolve, reject) => {
+                    FilesManager.resolve = resolve;
+                    FilesManager.reject = reject;
+                }).finally(() => {
                     this.hidden = true;
 
                     FilesManager.promise = null;
@@ -80,7 +70,6 @@ class FilesManager {
                 return FilesManager.promise;
             }
 
-
             close(): void {
                 if (this.hidden) {
                     return;
@@ -89,16 +78,11 @@ class FilesManager {
                 this.hidden = true;
                 this.render();
 
-        
+                FilesManager.filters = [];
                 FilesManager.resolve?.(null);
             }
 
-
-            attributeChangedCallback(
-                name: string,
-                oldValue: string | null,
-                newValue: string | null
-            ) {
+            attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
                 if (oldValue === newValue) {
                     return;
                 }
@@ -118,15 +102,10 @@ class FilesManager {
                 }
             }
 
-
             render() {
-                render(
-                    <FilesManagerComponent hidden={this.hidden} />,
-                    this
-                );
+                render(<FilesManagerComponent hidden={this.hidden} />, this);
             }
         }
-
 
         if (!customElements.get(name)) {
             customElements.define(name, FilesManagerHTMLElement);
@@ -134,14 +113,8 @@ class FilesManager {
     }
 }
 
-
 export { FilesManager };
 
 export { fr } from "./lang/fr";
 
-export type {
-    FileType,
-    FolderNode,
-    FolderType,
-    Translation
-} from "./types";
+export type { FileType, FolderNode, FolderType, Translation } from "./types";

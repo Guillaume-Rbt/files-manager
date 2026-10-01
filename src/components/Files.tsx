@@ -29,9 +29,14 @@ export function Files() {
     const confirm = useConfirm();
     const activeFile = files.find((file) => file.id === activeFileId);
     const normalizedSearchTerm = searchTerm.trim().toLocaleLowerCase();
+
+    const filteredFiles = files.filter((file) => {
+        return FilesManager.filters.every(([key, value]) => file[key]?.includes(value));
+    });
+
     const visibleFiles = normalizedSearchTerm
-        ? files.filter((file) => file.name.toLocaleLowerCase().split(".")[0].includes(normalizedSearchTerm))
-        : files;
+        ? filteredFiles.filter((file) => file.name.toLocaleLowerCase().split(".")[0].includes(normalizedSearchTerm))
+        : filteredFiles;
 
     useEffect(() => {
         setActiveFileId(null);
