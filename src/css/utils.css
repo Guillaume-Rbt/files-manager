@@ -8,7 +8,7 @@
     --fm-radius: calc(var(--fm-base));
 }
 
-.file-manager-element {
+.files-manager-element {
     .rotate-90 {
         transform: rotate(90deg);
     }
