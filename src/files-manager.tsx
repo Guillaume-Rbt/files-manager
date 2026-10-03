@@ -36,7 +36,7 @@ class FilesManager {
             hidden = true;
 
             connectedCallback() {
-                this.classList.add("files-manager");
+                this.classList.add("files-manager-element");
                 this.render();
             }
 

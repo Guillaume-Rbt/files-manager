@@ -10,6 +10,12 @@
 @import "./toolbar.css" layer(fm-components);
 @import "./footer.css" layer(fm-components);
 
+.files-manager-element:not([hidden="true"]) {
+    .file-manager__overlay {
+        z-index: 999;
+    }
+}
+
 .file-manager__overlay {
     position: fixed;
     top: 0;
