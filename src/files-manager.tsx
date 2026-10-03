@@ -44,8 +44,12 @@ class FilesManager {
                 return ["root-dir", "endpoint"];
             }
 
-            open(options: { filter: { [key in keyof FileType]?: any } }): Promise<string | null> {
-                FilesManager.filters = Object.entries(options.filter) as [keyof FileType, any][];
+            open(opt: { filters?: { [key in keyof FileType]?: any } } = {}): Promise<string | null> {
+                const options = {
+                    filters: {},
+                    ...opt,
+                };
+                FilesManager.filters = Object.entries(options.filters) as [keyof FileType, any][];
 
                 if (FilesManager.promise) {
                     return FilesManager.promise;
