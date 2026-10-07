@@ -12,7 +12,7 @@ export type FilesManagerOptions = {
 };
 
 export interface FilesManagerElement extends HTMLElement {
-    open(): Promise<string | null>;
+    open(opt: { filters?: { [key in keyof FileType]?: any } }): Promise<string | null>;
     close(): void;
 }
 
