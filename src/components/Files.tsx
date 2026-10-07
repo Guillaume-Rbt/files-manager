@@ -30,6 +30,8 @@ export function Files() {
     const activeFile = files.find((file) => file.id === activeFileId);
     const normalizedSearchTerm = searchTerm.trim().toLocaleLowerCase();
 
+    console.log("filters : ", FilesManager.filters);
+
     const filteredFiles = files.filter((file) => {
         return FilesManager.filters.every(([key, value]) => file[key]?.includes(value));
     });
@@ -48,6 +50,9 @@ export function Files() {
 
     const handleFileRenamed = (previousFileId: string, renamedFile: FileType) => {
         renameFileInCache(activeFolderId, previousFileId, renamedFile);
+        if (activeFileId === previousFileId) {
+            setActiveFileId(renamedFile.id);
+        }
     };
 
     const handleFileMoved = (movedFile: FileType, previousFolderId: string | null) => {

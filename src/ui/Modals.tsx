@@ -53,18 +53,18 @@ export function ModalProvider({ children }: { children: ComponentChildren }) {
             {children}
 
             {message && (
-                <div className='confirm-overlay flex flex-column'>
+                <div className='modal-overlay flex flex-column'>
                     <div
-                        className='confirm-modal flex flex-column'
+                        className='modal flex flex-column'
                         role='dialog'
                         aria-modal='true'
-                        aria-labelledby='confirm-modal-title'>
-                        <h3 aria-labelledby='confirm-modal-title' className='confirm-modal__title'>
+                        aria-labelledby='modal-title'>
+                        <h3 aria-labelledby='modal-title' className='modal__title'>
                             {title}
                         </h3>
                         <p dangerouslySetInnerHTML={{ __html: `${message}` }}></p>
 
-                        <div className='confirm-modal__action flex flex-align-center flex-justify-end gap-2'>
+                        <div className='modal__action flex flex-align-center flex-justify-end gap-2'>
                             {buttons?.map((button) => (
                                 <button
                                     type='button'

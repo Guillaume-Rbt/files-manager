@@ -6,13 +6,17 @@
 @import "./files.css" layer(fm-components);
 @import "./file.css" layer(fm-components);
 @import "./toast.css" layer(fm-components);
-@import "./confirm.css" layer(fm-components);
+@import "./modal.css" layer(fm-components);
 @import "./toolbar.css" layer(fm-components);
 @import "./footer.css" layer(fm-components);
 
 .files-manager-element:not([hidden="true"]) {
     .file-manager__overlay {
         z-index: 999;
+    }
+
+    * {
+        font-family: sans-serif;
     }
 }
 

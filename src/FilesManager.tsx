@@ -15,15 +15,16 @@ export function FilesManagerComponent({ hidden }: { hidden: boolean }) {
     }, [hidden]);
 
     return (
-        <ModalProvider>
-            <div className='file-manager__overlay'>
+        <div className='file-manager__overlay'>
+            {" "}
+            <ModalProvider>
                 <div className={`files-manager flex relative`}>
                     <ToastProvider>
                         <Tree />
                         <Files />
                     </ToastProvider>
                 </div>
-            </div>
-        </ModalProvider>
+            </ModalProvider>
+        </div>
     );
 }

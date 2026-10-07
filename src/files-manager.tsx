@@ -25,7 +25,7 @@ class FilesManager {
 
     static resolve: ((value: string | null) => void) | null = null;
     static reject: ((reason?: unknown) => void) | null = null;
-    static filters: [keyof FileType, any][];
+    static filters: [keyof FileType, any][] = [];
 
     constructor(options: FilesManagerOptions = {}) {
         FilesManager.lang = options.lang ?? FR;
@@ -45,11 +45,7 @@ class FilesManager {
             }
 
             open(opt: { filters?: { [key in keyof FileType]?: any } } = {}): Promise<string | null> {
-                const options = {
-                    filters: {},
-                    ...opt,
-                };
-                FilesManager.filters = Object.entries(options.filters) as [keyof FileType, any][];
+                FilesManager.filters = Object.entries(opt.filters ?? {}) as [keyof FileType, any][];
 
                 if (FilesManager.promise) {
                     return FilesManager.promise;

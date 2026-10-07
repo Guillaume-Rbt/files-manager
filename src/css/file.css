@@ -22,7 +22,7 @@
 
 .file__name {
     margin-bottom: auto;
-    word-wrap: break-word;
+    word-wrap: anywhere;
     text-align: center;
 }
 
