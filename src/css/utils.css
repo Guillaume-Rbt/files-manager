@@ -1,5 +1,6 @@
 :root {
-    --fm-base: 4px;
+    --fm-rem: 16px;
+    --fm-base: calc(var(--fm-rem) * .25);
     --fm-color: #1a1a1a;
     --fm-primary: #0081ff;
     --fm-danger: #de3e44;
@@ -114,14 +115,14 @@
 
     .rounded-button {
         border-radius: 50%;
-        padding: 0.3rem;
+        padding: calc(0.3 * var(--fm-rem));
         background-color: transparent;
         border: none;
         cursor: pointer;
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 1.25rem;
+        font-size: calc(1.25 * var(--fm-rem));
 
         &[data-type="danger"] {
             color: var(--fm-danger);
@@ -134,13 +135,14 @@
 
     .btn {
         border-radius: var(--fm-radius);
-        padding: 0.4rem 0.75rem;
+        padding: calc(0.4 * var(--fm-rem)) calc(0.75 * var(--fm-rem));
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
         transition: 300ms all;
-        gap: 0.5rem;
+        font-size: calc(1 * var(--fm-rem));
+        gap: calc(0.5 * var(--fm-rem));
 
         &:disabled {
             cursor: not-allowed;
@@ -164,7 +166,7 @@
 
         &.btn-secondary {
             border: 1px solid color-mix(in srgb, var(--fm-primary) 35%, transparent);
-            padding: 0.4rem 0.75rem;
+            padding: calc(0.4 * var(--fm-rem)) calc(0.75 * var(--fm-rem));
             color: var(--fm-color);
             background: #fff;
 

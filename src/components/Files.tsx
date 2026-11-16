@@ -85,6 +85,9 @@ export function Files() {
         }
 
         removeFileFromCache(activeFolderId, id);
+        if (activeFileId === id) {
+            setActiveFileId(null);
+        }
     };
 
     const handleAddFiles = async (addedFiles: File[]) => {

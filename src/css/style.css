@@ -35,16 +35,16 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    padding: calc(1 * var(--fm-rem));
 }
 
 .files-manager {
     max-height: 80%;
     flex-grow: 1;
-    height: 40rem;
+    height: calc(40 * var(--fm-rem));
     background: #fdfdfd;
     color: var(--fm-color);
-    border-radius: 1.25rem;
+    border-radius: calc(1.25 * var(--fm-rem));
     overflow: hidden;
     flex-grow: 1;
     max-width: 80%;

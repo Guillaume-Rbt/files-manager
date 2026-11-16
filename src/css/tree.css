@@ -1,9 +1,9 @@
 .files-manager__tree {
     background-color: color-mix(in srgb, var(--fm-primary) 10%, transparent);
     height: 100%;
-    padding: 1rem;
+    padding: calc(1 * var(--fm-rem));
     overflow: auto;
-    min-width: 16rem;
+    min-width: calc(16 * var(--fm-rem));
 
     @media (max-width: 550px) {
         height: auto;
@@ -13,7 +13,7 @@
 }
 
 .files-manager__folder-wrapper {
-    gap: 0.3rem;
+    gap: calc(0.3 * var(--fm-rem));
     align-items: stretch;
 }
 
@@ -22,7 +22,7 @@
 }
 
 .files-manager__tree .files-manager__folder__children {
-    margin-left: 1rem;
+    margin-left: calc(1 * var(--fm-rem));
 
     &:not(.files-manager__folder__children--is-expended) {
         height: 0;
@@ -31,7 +31,7 @@
 }
 
 .files-manager__folder__actions {
-    gap: 0.3rem;
+    gap: calc(0.3 * var(--fm-rem));
     opacity: 0;
     pointer-events: none;
     background-color: inherit;
@@ -53,7 +53,7 @@
     color: var(--fm-color);
     background: transparent;
     position: relative;
-    gap: 2rem;
+    gap: calc(2 * var(--fm-rem));
 
     &.files-manager__folder--is-active {
         background-color: color-mix(in srgb, var(--fm-primary) 25%, white);
@@ -65,7 +65,7 @@
 }
 
 .files-manager__folder__icon {
-    font-size: 1.5rem;
+    font-size: calc(1.5 * var(--fm-rem));
     margin-right: 0.5em;
     color: var(--fm-primary);
     opacity: 0.7;
@@ -73,13 +73,13 @@
 
 .files-manager__folder__input {
     width: 10px;
-    font-size: 1rem;
-    padding: 0.25rem;
+    font-size: calc(1 * var(--fm-rem));
+    padding: calc(0.25 * var(--fm-rem));
     color: var(--fm-color);
     border: 1px solid var(--fm-primary);
 }
 
 .files-manager__add-folder-wrapper {
-    gap: 0.3rem;
+    gap: calc(0.3 * var(--fm-rem));
     align-items: center;
 }

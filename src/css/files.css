@@ -8,7 +8,7 @@
 }
 
 .files-manager__move-menu {
-    padding: 0.75rem;
+    padding: calc(0.75 * var(--fm-rem));
     border: 1px solid color-mix(in srgb, var(--fm-primary) 22%, transparent);
     border-radius: var(--fm-radius);
     width: max-content;
@@ -19,8 +19,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
+    gap: calc(1 * var(--fm-rem));
+    margin-bottom: calc(0.5 * var(--fm-rem));
 }
 
 .files-manager__files__files-wrapper {
@@ -28,10 +28,10 @@
     align-content: start;
     justify-content: start;
     grid-template-columns: repeat(auto-fill, 110px);
-    padding-block: 1rem;
-    padding-inline: 1rem;
+    padding-block: calc(1 * var(--fm-rem));
+    padding-inline: calc(1 * var(--fm-rem));
     position: relative;
-    gap: 1rem;
+    gap: calc(1 * var(--fm-rem));
 }
 
 .files-manager__files__files-wrapper--is-dragging::before {
@@ -64,17 +64,17 @@
     bottom: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
+    gap: calc(0.5 * var(--fm-rem));
+    padding: calc(0.75 * var(--fm-rem)) calc(1 * var(--fm-rem));
     background: rgba(0, 0, 0, 0.6);
 }
 
 .files-manager__uploads__item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: calc(0.5 * var(--fm-rem));
     color: #fff;
-    font-size: 0.85rem;
+    font-size: calc(0.85 * var(--fm-rem));
 }
 
 .files-manager__uploads__item__spinner {
