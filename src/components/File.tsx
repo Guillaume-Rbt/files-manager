@@ -69,6 +69,7 @@ export function File({
 
         if (sanitizedName === name) {
             setRenameMode(false);
+            waitValidation.current = true;
             return;
         }
         if (sanitizedName === null) {

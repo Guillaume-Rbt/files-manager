@@ -10,6 +10,11 @@
 @import "./toolbar.css" layer(fm-components);
 @import "./footer.css" layer(fm-components);
 
+/* html,
+body {
+    color: #fff;
+} */
+
 .files-manager-element:not([hidden="true"]) {
     .file-manager__overlay {
         z-index: 999;
@@ -38,6 +43,7 @@
     flex-grow: 1;
     height: 40rem;
     background: #fdfdfd;
+    color: var(--fm-color);
     border-radius: 1.25rem;
     overflow: hidden;
     flex-grow: 1;

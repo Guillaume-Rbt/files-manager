@@ -138,6 +138,7 @@ function FolderComponent({
 
         if (name === folder.name) {
             setIsRenaming(false);
+            waitValidation.current = true;
             return;
         }
 

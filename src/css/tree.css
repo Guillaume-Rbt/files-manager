@@ -75,6 +75,7 @@
     width: 10px;
     font-size: 1rem;
     padding: 0.25rem;
+    color: var(--fm-color);
     border: 1px solid var(--fm-primary);
 }
 
