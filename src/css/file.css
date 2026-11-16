@@ -26,6 +26,12 @@
     text-align: center;
 }
 
+input.file__name {
+    width: 100%;
+    color: var(--fm-color);
+    border: 1px solid var(--fm-primary);
+}
+
 .file__delete {
     position: absolute;
     top: 0.5rem;

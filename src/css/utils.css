@@ -1,5 +1,5 @@
 :root {
-    --fm-base: 0.25rem;
+    --fm-base: 4px;
     --fm-color: #1a1a1a;
     --fm-primary: #0081ff;
     --fm-danger: #de3e44;
@@ -64,9 +64,11 @@
         &.flex-justify-end {
             justify-content: flex-end;
         }
+
         &.flex-align-start {
             align-items: flex-start;
         }
+
         &.flex-align-center {
             align-items: center;
         }
